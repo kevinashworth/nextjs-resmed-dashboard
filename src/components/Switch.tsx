@@ -1,8 +1,9 @@
 "use client";
 
+import { ComponentProps, useState } from "react";
+
 import { Switch as LibSwitch } from "@headlessui/react";
 import { cx } from "class-variance-authority";
-import { ComponentProps, useState } from "react";
 
 export function Switch({
   defaultChecked,

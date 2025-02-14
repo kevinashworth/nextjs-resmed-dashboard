@@ -1,7 +1,8 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { RefObject, useMemo, useRef } from "react";
+
+import dynamic from "next/dynamic";
 
 import debounce from "@/lib/debounce";
 
