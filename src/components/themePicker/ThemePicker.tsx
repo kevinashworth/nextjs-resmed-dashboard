@@ -9,8 +9,7 @@ const hueCookie = "theme-hue",
   darkModeCookie = "theme-dark-mode";
 
 const getHue = async () => (await cookies()).get(hueCookie)?.value ?? "40";
-const getDarkMode = async () =>
-  (await cookies()).get(darkModeCookie)?.value ?? "no";
+const getDarkMode = async () => (await cookies()).get(darkModeCookie)?.value ?? "no";
 
 export const getThemeDataFromCookies = async () => {
   return {
@@ -36,21 +35,14 @@ export async function ThemePicker() {
     cookieStore.set(hueCookie, form.get("hue") as string, {
       maxAge: 1704085200,
     });
-    cookieStore.set(
-      darkModeCookie,
-      form.get("force-dark") == "on" ? "yes" : "no",
-      { maxAge: 1704085200 }
-    );
+    cookieStore.set(darkModeCookie, form.get("force-dark") == "on" ? "yes" : "no", { maxAge: 1704085200 });
 
     revalidatePath("/api/my-theme");
   }
 
   return (
     <form action={updateTheme} className="md:col-span-2">
-      <FormContent
-        darkMode={(await getDarkMode()) == "yes"}
-        hue={await getHue()}
-      />
+      <FormContent darkMode={(await getDarkMode()) == "yes"} hue={await getHue()} />
     </form>
   );
 }

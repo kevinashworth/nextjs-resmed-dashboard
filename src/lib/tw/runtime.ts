@@ -1,10 +1,4 @@
-import {
-  toGamut as _toGamut,
-  Color,
-  Oklch,
-  converter,
-  differenceEuclidean,
-} from "culori";
+import { toGamut as _toGamut, Color, Oklch, converter, differenceEuclidean } from "culori";
 
 import { makeVariable, shades } from "./common";
 
@@ -25,10 +19,7 @@ export function getVariables({
   mode?: "bright" | "consistent";
 }): SingleVariable[] {
   const calculator = mode === "bright" ? highestChroma : consistentChroma;
-  return shades.map((shade, shadeIndex) => [
-    makeVariable({ name: baseName, shade }),
-    calculator(shadeIndex, hue),
-  ]);
+  return shades.map((shade, shadeIndex) => [makeVariable({ name: baseName, shade }), calculator(shadeIndex, hue)]);
 }
 
 export function updateVariables(variables: SingleVariable[], el?: HTMLElement) {
@@ -60,9 +51,7 @@ export const highestChroma = (shadeIndex: number, hue: number) => {
   const color = `oklch(${lightness[shadeIndex]} 0.4 ${hue})`;
 
   // Clamping it to the highest chroma possible
-  return serializeColor(
-    oklch(toGamut("p3", "oklch", differenceEuclidean("oklch"), 0)(color))
-  );
+  return serializeColor(oklch(toGamut("p3", "oklch", differenceEuclidean("oklch"), 0)(color)));
 };
 
 export const consistentChroma = (i: number, hue: number) => {
@@ -71,9 +60,7 @@ export const consistentChroma = (i: number, hue: number) => {
   // Using a pinned chroma
   const color = `oklch(${lightness[i]} ${chromaData[i]} ${hue})`;
 
-  return serializeColor(
-    oklch(toGamut("p3", "oklch", differenceEuclidean("oklch"), 0)(color))
-  );
+  return serializeColor(oklch(toGamut("p3", "oklch", differenceEuclidean("oklch"), 0)(color)));
 };
 
 const chromaData: Record<number, number> = {
@@ -90,5 +77,4 @@ const chromaData: Record<number, number> = {
   10: 0.0491,
 };
 
-const serializeColor = (c: Oklch): string =>
-  `${c.l.toFixed(3)} ${c.c.toFixed(3)} ${c.h?.toFixed(3)}`;
+const serializeColor = (c: Oklch): string => `${c.l.toFixed(3)} ${c.c.toFixed(3)} ${c.h?.toFixed(3)}`;

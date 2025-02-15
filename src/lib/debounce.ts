@@ -6,10 +6,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-function debounce<F extends (...args: any[]) => any>(
-  func: F,
-  delay: number
-): F {
+function debounce<F extends (...args: any[]) => any>(func: F, delay: number): F {
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
   return ((...args: Parameters<F>) => {

@@ -15,6 +15,6 @@ export function dynamicTwClasses(baseName: string, baseHue: number) {
           withVar: true,
         })} / <alpha-value>)`,
       ];
-    })
+    }),
   );
 }
