@@ -13,13 +13,7 @@ const HuePicker = dynamic(() => import("simple-hue-picker/react"), {
   ssr: false,
 });
 
-export const FormContent = ({
-  darkMode,
-  hue,
-}: {
-  darkMode: boolean;
-  hue: string;
-}) => {
+export const FormContent = ({ darkMode, hue }: { darkMode: boolean; hue: string }) => {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const onChangeDebounced = useMemo(() => makeOnChange(rootRef), []);
 
@@ -38,10 +32,7 @@ export const FormContent = ({
   }
 
   return (
-    <div
-      className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6"
-      ref={rootRef}
-    >
+    <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6" ref={rootRef}>
       <div className="sm:col-span-3">
         <Field id="hue" label="Favorite Color">
           <div className="h-2">
@@ -51,12 +42,7 @@ export const FormContent = ({
       </div>
       <div className="col-span-full">
         <Field id="dark-mode" label="Force dark mode">
-          <Switch
-            defaultChecked={darkMode}
-            label="Force dark mode"
-            name="force-dark"
-            onChange={onChangeDebounced}
-          />
+          <Switch defaultChecked={darkMode} label="Force dark mode" name="force-dark" onChange={onChangeDebounced} />
         </Field>
       </div>
     </div>
