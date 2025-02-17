@@ -1,0 +1,72 @@
+{
+  "data": {
+    "getPatientWrapper": {
+      "patient": {
+        "id": "1234567890",
+        "__typename": "Patient"
+      },
+      "sleepRecords": {
+        "items": [
+          {
+            "startDate": "2024-01-28",
+            "totalUsage": 438,
+            "sleepScore": 92,
+            "usageScore": 70,
+            "ahiScore": 5,
+            "maskScore": 4,
+            "leakScore": 13,
+            "ahi": 1.2,
+            "maskPairCount": 3,
+            "leakPercentile": 28.8,
+            "sleepRecordPatientId": "1234567890",
+            "__typename": "SleepRecord"
+          },
+          {
+            "startDate": "2024-01-29",
+            "totalUsage": 332,
+            "sleepScore": 82,
+            "usageScore": 55,
+            "ahiScore": 5,
+            "maskScore": 5,
+            "leakScore": 17,
+            "ahi": 2.5,
+            "maskPairCount": 1,
+            "leakPercentile": 22.8,
+            "sleepRecordPatientId": "1234567890",
+            "__typename": "SleepRecord"
+          },
+          {
+            "startDate": "2024-01-30",
+            "totalUsage": 483,
+            "sleepScore": 79,
+            "usageScore": 70,
+            "ahiScore": 5,
+            "maskScore": 4,
+            "leakScore": 0,
+            "ahi": 1.1,
+            "maskPairCount": 3,
+            "leakPercentile": 67.2,
+            "sleepRecordPatientId": "1234567890",
+            "__typename": "SleepRecord"
+          },
+          {
+            "startDate": "2024-01-31",
+            "totalUsage": 270,
+            "sleepScore": 54,
+            "usageScore": 45,
+            "ahiScore": 5,
+            "maskScore": 4,
+            "leakScore": 0,
+            "ahi": 2.4,
+            "maskPairCount": 3,
+            "leakPercentile": 67.2,
+            "sleepRecordPatientId": "1234567890",
+            "__typename": "SleepRecord"
+          }
+        ],
+        "__typename": "PaginatedSleepRecords"
+      },
+      "__typename": "PatientWrapper"
+    }
+  }
+}
