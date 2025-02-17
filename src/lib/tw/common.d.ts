@@ -1,6 +1,6 @@
 export declare const shades: number[];
 
-export function makeVariable(args: {
+export function makeVariable(_args: {
   fallbackValue?: string;
   name: string;
   shade: number | string;
