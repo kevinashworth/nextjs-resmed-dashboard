@@ -26,7 +26,11 @@ export function getVariables({
   mode?: "bright" | "consistent";
 }): SingleVariable[] {
   const calculator = mode === "bright" ? highestChroma : consistentChroma;
-  return shades.map((shade, shadeIndex) => [makeVariable({ name: baseName, shade }), calculator(shadeIndex, hue)]);
+  return shades.map((shade, shadeIndex) => {
+    const cssVariable = makeVariable({ name: baseName, shade });
+    const color = calculator({ shadeIndex, hue, returnSerializedColor: false });
+    return [cssVariable, color];
+  });
 }
 
 export function updateVariables(variables: SingleVariable[], el?: HTMLElement) {
@@ -51,23 +55,47 @@ const lightnessForShade = (shade: number) => {
 };
 const lightness = shades.map(lightnessForShade);
 
-export const highestChroma = (shadeIndex: number, hue: number) => {
+export const highestChroma = ({
+  shadeIndex,
+  hue,
+  returnSerializedColor = true,
+}: {
+  shadeIndex: number;
+  hue: number;
+  returnSerializedColor?: boolean;
+}) => {
   const oklch = converter("oklch");
 
   // Setting an obsurdly high chroma
   const color = `oklch(${lightness[shadeIndex]} 0.4 ${hue})`;
 
   // Clamping it to the highest chroma possible
-  return serializeColor(oklch(toGamut("p3", "oklch", differenceEuclidean("oklch"), 0)(color)));
+  const serializedColor = serializeColor(oklch(toGamut("p3", "oklch", differenceEuclidean("oklch"), 0)(color)));
+  if (returnSerializedColor) {
+    return serializedColor;
+  }
+  return color;
 };
 
-export const consistentChroma = (i: number, hue: number) => {
+export const consistentChroma = ({
+  shadeIndex,
+  hue,
+  returnSerializedColor = true,
+}: {
+  shadeIndex: number;
+  hue: number;
+  returnSerializedColor?: boolean;
+}) => {
   const oklch = converter("oklch");
 
   // Using a pinned chroma
-  const color = `oklch(${lightness[i]} ${chromaData[i]} ${hue})`;
+  const color = `oklch(${lightness[shadeIndex]} ${chromaData[shadeIndex]} ${hue})`;
 
-  return serializeColor(oklch(toGamut("p3", "oklch", differenceEuclidean("oklch"), 0)(color)));
+  const serializedColor = serializeColor(oklch(toGamut("p3", "oklch", differenceEuclidean("oklch"), 0)(color)));
+  if (returnSerializedColor) {
+    return serializedColor;
+  }
+  return color;
 };
 
 const chromaData: Record<number, number> = {
