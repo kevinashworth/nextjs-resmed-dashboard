@@ -1,9 +1,10 @@
 import type { Config } from "tailwindcss";
 
 import twForms from "@tailwindcss/forms";
-import colors, { fuchsia } from "tailwindcss/colors";
+import colors from "tailwindcss/colors";
 
 import { dynamicTwClasses } from "./src/lib/tw/twPlugin";
+import { baseHue } from "./src/lib/tw/constants";
 
 const config: Config = {
   content: [
@@ -16,7 +17,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        accent: dynamicTwClasses("accent", 40),
+        accent: dynamicTwClasses("accent", baseHue.accent),
         code: colors.emerald,
         danger: colors.red,
         success: colors.green,

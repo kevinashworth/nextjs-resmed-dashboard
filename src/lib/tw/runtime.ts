@@ -1,11 +1,18 @@
-import { toGamut as _toGamut, Color, Oklch, converter, differenceEuclidean } from "culori";
+import { converter, differenceEuclidean, modeOklch, modeP3, toGamut as _toGamut, useMode as _mode } from "culori/fn";
 
 import { makeVariable, shades } from "./common";
 
-const toGamut = _toGamut as (...args: unknown[]) => (color: string) => Color;
+import type { Color, Oklch } from "culori/fn";
+
+// See https://culorijs.org/guides/tree-shaking/, but basically, tree-shaking
+// requires us to 'register them manually with the useMode() method'.
+const _oklch = _mode(modeOklch);
+const _p3 = _mode(modeP3);
+
+const toGamut = _toGamut as (..._args: unknown[]) => (_color: string) => Color;
 
 /**
- * A map of CSS varable name to color
+ * A map of CSS variable name to color
  */
 type SingleVariable = [string, string];
 

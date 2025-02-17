@@ -35,7 +35,7 @@ export const FormContent = ({ darkMode, hue }: { darkMode: boolean; hue: string 
       <div className="sm:col-span-3">
         <Field id="hue" label="Favorite Color">
           <div className="h-2">
-            <HuePicker name="hue" onChange={onChangeDebounced} value={hue} />
+            <HuePicker name="hue" onInput={onChangeDebounced} value={hue} />
           </div>
         </Field>
       </div>
@@ -44,6 +44,11 @@ export const FormContent = ({ darkMode, hue }: { darkMode: boolean; hue: string 
           <Switch defaultChecked={darkMode} label="Force dark mode" name="force-dark" onChange={onChangeDebounced} />
         </Field>
       </div>
+      {/* <div className="col-span-full">
+        <Field id="light-mode" label="Force light mode">
+          <Switch label="Force light mode" name="force-light" disabled />
+        </Field>
+      </div> */}
     </div>
   );
 };
