@@ -2,9 +2,8 @@
 
 import { RefObject, useMemo, useRef } from "react";
 
+import debounce from "lodash.debounce";
 import dynamic from "next/dynamic";
-
-import debounce from "@/lib/debounce";
 
 import { Field } from "../Field";
 import { Switch } from "../Switch";

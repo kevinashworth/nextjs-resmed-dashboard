@@ -1,6 +1,6 @@
-import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
+import { baseHue } from "@/lib/tw/constants";
 import { getVariables } from "@/lib/tw/runtime";
 
 import { FormContent } from "./Form";
@@ -8,7 +8,7 @@ import { FormContent } from "./Form";
 const hueCookie = "theme-hue",
   darkModeCookie = "theme-dark-mode";
 
-const getHue = async () => (await cookies()).get(hueCookie)?.value ?? "40";
+const getHue = async () => (await cookies()).get(hueCookie)?.value ?? baseHue.accent.toString();
 const getDarkMode = async () => (await cookies()).get(darkModeCookie)?.value ?? "no";
 
 export const getThemeDataFromCookies = async () => {
@@ -36,8 +36,6 @@ export async function ThemePicker() {
       maxAge: 1704085200,
     });
     cookieStore.set(darkModeCookie, form.get("force-dark") == "on" ? "yes" : "no", { maxAge: 1704085200 });
-
-    revalidatePath("/api/my-theme");
   }
 
   return (
