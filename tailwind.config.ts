@@ -1,5 +1,8 @@
 import twForms from "@tailwindcss/forms";
 import colors from "tailwindcss/colors";
+import animate from "tailwindcss-animate";
+
+import { chartColors } from "./src/lib/colors";
 
 import type { Config } from "tailwindcss";
 
@@ -9,8 +12,8 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  darkMode: "class",
-  plugins: [twForms],
+  darkMode: ["class", "class"],
+  plugins: [twForms, animate],
   theme: {
     extend: {
       colors: {
@@ -30,6 +33,12 @@ const config: Config = {
         code: colors.emerald,
         danger: colors.red,
         success: colors.green,
+        ...chartColors,
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
     },
   },
