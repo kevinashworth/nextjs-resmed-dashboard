@@ -1,27 +1,19 @@
 import twForms from "@tailwindcss/forms";
-import { content, plugin } from "flowbite-react/tailwind";
 import colors from "tailwindcss/colors";
 import animate from "tailwindcss-animate";
 
-import type { Config } from "tailwindcss";
+import { chartColors } from "./src/lib/colors";
 
-export const chartColors = {
-  events: "#da1f3d",
-  hours: "#1788c3",
-  leak: "#ed6937",
-  mask: "#6e308f",
-  score: "#ffc344",
-};
+import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-    content(),
   ],
   darkMode: ["class", "class"],
-  plugins: [twForms, plugin(), animate],
+  plugins: [twForms, animate],
   theme: {
     extend: {
       colors: {

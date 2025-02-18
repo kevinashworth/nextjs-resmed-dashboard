@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import type { ChangeEvent } from "react";
 
-import Chart from "react-apexcharts";
+import dynamic from "next/dynamic";
+const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 import AutoSizer from "react-virtualized-auto-sizer";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

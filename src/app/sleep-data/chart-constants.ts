@@ -1,4 +1,6 @@
-import { chartColors } from "../../../tailwind.config";
+"use client";
+
+import { chartColors } from "@/lib/colors";
 
 import type { TabNames } from "./data-types";
 import type { ApexOptions } from "apexcharts";
