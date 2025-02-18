@@ -2,7 +2,7 @@ import { cx } from "class-variance-authority";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 
-import { getThemeData, getThemeDataFromCookies } from "@/components/themePicker/ThemePicker";
+// import { getThemeData, getThemeDataFromCookies } from "@/components/themePicker/ThemePicker";
 
 import type { Metadata } from "next";
 
@@ -28,22 +28,23 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { darkMode, hue } = await getThemeDataFromCookies();
-  const { className, style } = getThemeData(hue!, darkMode === "yes");
+  // const { darkMode, hue } = await getThemeDataFromCookies();
+  // const { className, style } = getThemeData(hue!, darkMode === "yes");
+  // console.log({ className, style });
 
   return (
-    <html lang="en" className={cx("h-full", { className: !!className })} style={style}>
+    <html lang="en" className="h-full">
       <body className={cx(geistSans.variable, geistMono.variable, "antialiased")}>
-        <nav className="mx-auto flex justify-center gap-4 bg-accent-50 text-xs font-medium text-accent-800">
-          <Link className="m-1 p-1 hover:bg-accent-100 hover:underline" href="/">
+        <nav className="mx-auto flex justify-center gap-4 bg-orange-50 text-xs font-medium text-orange-800">
+          <Link className="m-1 p-1 hover:bg-orange-100 hover:underline" href="/">
             Home
           </Link>
-          <Link className="m-1 p-1 hover:bg-accent-100 hover:underline" href="/sleep-data">
+          <Link className="m-1 p-1 hover:bg-orange-100 hover:underline" href="/sleep-data">
             Sleep Data
           </Link>
-          <Link className="m-1 p-1 hover:bg-accent-100 hover:underline" href="/settings">
+          {/* <Link className="m-1 p-1 hover:bg-orange-100 hover:underline" href="/settings">
             Settings
-          </Link>
+          </Link> */}
         </nav>
 
         <main className="m-1 p-1">{children}</main>
@@ -51,3 +52,5 @@ export default async function RootLayout({
     </html>
   );
 }
+
+// {/* <html lang="en" className={cx("h-full", { className: !!className })} style={style}> */}
