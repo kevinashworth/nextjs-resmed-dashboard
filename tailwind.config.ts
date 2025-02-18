@@ -1,16 +1,27 @@
 import twForms from "@tailwindcss/forms";
+import { content, plugin } from "flowbite-react/tailwind";
 import colors from "tailwindcss/colors";
+import animate from "tailwindcss-animate";
 
 import type { Config } from "tailwindcss";
+
+export const chartColors = {
+  events: "#da1f3d",
+  hours: "#1788c3",
+  leak: "#ed6937",
+  mask: "#6e308f",
+  score: "#ffc344",
+};
 
 const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    content(),
   ],
-  darkMode: "class",
-  plugins: [twForms],
+  darkMode: ["class", "class"],
+  plugins: [twForms, plugin(), animate],
   theme: {
     extend: {
       colors: {
@@ -30,6 +41,12 @@ const config: Config = {
         code: colors.emerald,
         danger: colors.red,
         success: colors.green,
+        ...chartColors,
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
     },
   },
