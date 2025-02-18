@@ -33,7 +33,7 @@ export default async function RootLayout({
   // console.log({ className, style });
 
   return (
-    <html lang="en" className="h-full">
+    <html lang="en">
       <body className={cx(geistSans.variable, geistMono.variable, "antialiased")}>
         <nav className="mx-auto flex justify-center gap-4 bg-orange-50 text-xs font-medium text-orange-800">
           <Link className="m-1 p-1 hover:bg-orange-100 hover:underline" href="/">
