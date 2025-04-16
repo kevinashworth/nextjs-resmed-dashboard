@@ -143,7 +143,13 @@ function PageContent({ data }: { data: AllData }) {
     <div className="">
       {/* <!-- Date Range Controls --> */}
       <div className="mb-6 inline-block rounded-lg p-4">
-        <h1 className="mb-4 text-xl font-bold text-accent-500">ResMed Sleep Data</h1>
+        <h1 className="mb-4 text-xl font-bold text-accent-500">
+          My{" "}
+          <span className="text-accent-600">
+            Resmed <span className="font-normal">my</span>Air
+          </span>{" "}
+          Sleep Data
+        </h1>
         <div className="flex flex-row items-start gap-4">
           <div className="flex items-center gap-3">
             <label htmlFor="preset-range" className="whitespace-nowrap text-sm font-semibold text-accent-500">
