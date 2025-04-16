@@ -37,6 +37,76 @@ export const tabMap: { [key: number]: TabNames } = {
   4: "score",
 };
 
+const yAxisOptionsBase = {
+  axisTicks: { show: true },
+  axisBorder: { show: true },
+  labels: {
+    formatter: function formatter(d: number) {
+      return `${Math.floor(d)}`;
+    },
+  },
+};
+
+const yAxisOptionsHours = {
+  max: 600,
+  min: 0,
+  labels: {
+    formatter: function (d: number) {
+      return `${Math.floor(d / 60)}`;
+    },
+  },
+  title: {
+    text: "Hours",
+  },
+};
+
+const yAxisOptionsLeak = {
+  title: {
+    text: "Leak (L/min)",
+  },
+};
+
+const yAxisOptionsEvents = {
+  title: {
+    text: "Events",
+  },
+};
+
+const yAxisOptionsMask = {
+  title: {
+    text: "On/Off",
+  },
+};
+
+const yAxisOptionsScore = {
+  title: {
+    text: "Score",
+  },
+};
+
+const yAxisOptions = {
+  hours: {
+    ...yAxisOptionsBase,
+    ...yAxisOptionsHours,
+  },
+  leak: {
+    ...yAxisOptionsBase,
+    ...yAxisOptionsLeak,
+  },
+  events: {
+    ...yAxisOptionsBase,
+    ...yAxisOptionsEvents,
+  },
+  mask: {
+    ...yAxisOptionsBase,
+    ...yAxisOptionsMask,
+  },
+  score: {
+    ...yAxisOptionsBase,
+    ...yAxisOptionsScore,
+  },
+};
+
 export const options: ApexOptions = {
   chart: {
     fontFamily: "Inter, sans-serif",
@@ -56,27 +126,9 @@ export const options: ApexOptions = {
       show: false,
     },
   },
-  // fill: {
-  //   type: ["gradient", "solid"],
-  //   opacity: [0.85, 1],
-  //   gradient: {
-  //     opacityFrom: 0.55,
-  //     opacityTo: 0.25,
-  //     shade: "#1C64F2",
-  //     gradientToColors: ["#1C64F2"],
-  //   },
-  // },
   fill: {
     opacity: [0.75, 1],
   },
-  // fill: {
-  //   gradient: {
-  //     opacityFrom: 0.55,
-  //     opacityTo: 0.25,
-  //     shade: "#1C64F2",
-  //     gradientToColors: ["#1C64F2"],
-  //   },
-  // },
   dataLabels: {
     enabled: false,
   },
@@ -93,7 +145,6 @@ export const options: ApexOptions = {
     },
   },
   xaxis: {
-    // categories: categories,
     labels: {
       formatter: function (d) {
         const date = new Date(d);
@@ -110,9 +161,21 @@ export const options: ApexOptions = {
       show: false,
     },
   },
-  yaxis: {
-    show: false,
-  },
+};
+
+function getChartOptions(tab: TabNames): ApexOptions {
+  return {
+    ...options,
+    yaxis: yAxisOptions[tab],
+  };
+}
+
+export const chartOptions: Record<TabNames, ApexOptions> = {
+  hours: getChartOptions("hours"),
+  leak: getChartOptions("leak"),
+  events: getChartOptions("events"),
+  mask: getChartOptions("mask"),
+  score: getChartOptions("score"),
 };
 
 export const series: Record<TabNames, { name?: string; type: string; data: number[]; color: string }[]> = {
