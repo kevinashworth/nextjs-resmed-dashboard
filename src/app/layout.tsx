@@ -19,8 +19,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ResMed Sleep Data Dashboard",
-  description: "Built with Next.js, Tailwind CSS, and TypeScript",
+  title: "My Resmed Sleep Data Dashboard",
+  description:
+    "I built this Sleep Data Dashboard to view my `Resmed myAir` data with different timelines - Built with Next.js, React, Tailwind CSS, and TypeScript",
 };
 
 export default async function RootLayout({
