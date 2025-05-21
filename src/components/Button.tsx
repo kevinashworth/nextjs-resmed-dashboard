@@ -3,7 +3,7 @@
 import { VariantProps, cva } from "class-variance-authority";
 
 const button = cva(
-  "rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2",
+  "rounded-md px-3 py-2 text-sm font-semibold shadow-xs focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2",
   {
     defaultVariants: { theme: "accent" },
     variants: {

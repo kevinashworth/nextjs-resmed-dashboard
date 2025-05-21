@@ -218,7 +218,7 @@ function PageContent({ data }: { data: AllData }) {
             </label>
             <select
               id="preset-range"
-              className="rounded border-gray-300 text-sm shadow focus:border-blue-500 focus:ring-blue-500"
+              className="rounded border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
               value={selectedPreset}
               onChange={handlePresetChange}
             >
@@ -242,7 +242,7 @@ function PageContent({ data }: { data: AllData }) {
             <input
               type="date"
               id="start-date"
-              className="rounded border-gray-300 text-sm shadow focus:border-blue-500 focus:ring-blue-500"
+              className="rounded border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
               value={startDate}
               onChange={handleStartDateChange}
               min={data.oldestDate}
@@ -256,7 +256,7 @@ function PageContent({ data }: { data: AllData }) {
             <input
               type="date"
               id="end-date"
-              className="rounded border-gray-300 text-sm shadow focus:border-blue-500 focus:ring-blue-500"
+              className="rounded border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
               value={endDate}
               onChange={handleEndDateChange}
               min={data.oldestDate}
