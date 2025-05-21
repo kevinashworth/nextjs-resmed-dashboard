@@ -204,7 +204,7 @@ function PageContent({ data }: { data: AllData }) {
     <div>
       {/* <!-- Date Range Controls --> */}
       <div className="mb-6 inline-block rounded-lg p-4">
-        <h1 className="mb-4 text-xl font-bold text-accent-500">
+        <h1 className="text-accent-500 mb-4 text-xl font-bold">
           My{" "}
           <span className="text-accent-600">
             Resmed <span className="font-normal">my</span>Air
@@ -213,7 +213,7 @@ function PageContent({ data }: { data: AllData }) {
         </h1>
         <div className="flex flex-row items-start gap-4">
           <div className="flex items-center gap-3">
-            <label htmlFor="preset-range" className="whitespace-nowrap text-sm font-semibold text-accent-500">
+            <label htmlFor="preset-range" className="text-accent-500 text-sm font-semibold whitespace-nowrap">
               Date Range
             </label>
             <select
@@ -236,7 +236,7 @@ function PageContent({ data }: { data: AllData }) {
             </select>
           </div>
           <div className="flex items-center gap-3">
-            <label htmlFor="start-date" className="whitespace-nowrap text-sm font-medium text-gray-700">
+            <label htmlFor="start-date" className="text-sm font-medium whitespace-nowrap text-gray-700">
               Start Date
             </label>
             <input
@@ -250,7 +250,7 @@ function PageContent({ data }: { data: AllData }) {
             />
           </div>
           <div className="flex items-center gap-3">
-            <label htmlFor="end-date" className="whitespace-nowrap text-sm font-medium text-gray-700">
+            <label htmlFor="end-date" className="text-sm font-medium whitespace-nowrap text-gray-700">
               End Date
             </label>
             <input
@@ -274,31 +274,31 @@ function PageContent({ data }: { data: AllData }) {
                 <TabsList>
                   <TabsTrigger
                     value="hours"
-                    className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-hours/80 data-[state=active]:p-4"
+                    className="data-[state=active]:border-hours/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
                   >
                     <MyTabTriggerTitle name="hours" title="Usage Hours" />
                   </TabsTrigger>
                   <TabsTrigger
                     value="leak"
-                    className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-leak/80 data-[state=active]:p-4"
+                    className="data-[state=active]:border-leak/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
                   >
                     <MyTabTriggerTitle name="leak" title="Mask Seal" />
                   </TabsTrigger>
                   <TabsTrigger
                     value="events"
-                    className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-events/80 data-[state=active]:p-4"
+                    className="data-[state=active]:border-events/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
                   >
                     <MyTabTriggerTitle name="events" title="Events" />
                   </TabsTrigger>
                   <TabsTrigger
                     value="mask"
-                    className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-mask/80 data-[state=active]:p-4"
+                    className="data-[state=active]:border-mask/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
                   >
                     <MyTabTriggerTitle name="mask" title="Mask On/Off" />
                   </TabsTrigger>
                   <TabsTrigger
                     value="score"
-                    className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-score/80 data-[state=active]:p-4"
+                    className="data-[state=active]:border-score/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
                   >
                     <MyTabTriggerTitle name="score" title="myAir Score" />
                   </TabsTrigger>

@@ -19,7 +19,7 @@ export function Switch({
       checked={checked}
       className={cx(
         checked ? "bg-accent-600" : "bg-gray-600",
-        "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden focus:ring-2 focus:ring-accent-600 focus:ring-offset-2",
+        "focus:ring-accent-600 relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:ring-2 focus:ring-offset-2 focus:outline-hidden",
       )}
       onChange={(checked) => {
         setChecked(checked);
