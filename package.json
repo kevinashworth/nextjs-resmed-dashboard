@@ -18,7 +18,7 @@
     "fast-glob": "3.3.3",
     "lucide-react": "0.513.0",
     "next": "15.3.3",
-    "pretty-format": "29.7.0",
+    "pretty-format": "30.0.0",
     "react": "19.1.0",
     "react-apexcharts": "1.7.0",
     "react-dom": "19.1.0",
