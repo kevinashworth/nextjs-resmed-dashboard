@@ -34,7 +34,7 @@
     "@tailwindcss/forms": "0.5.10",
     "@tailwindcss/postcss": "4.1.11",
     "@types/lodash.debounce": "4.0.9",
-    "@types/node": "22.15.31",
+    "@types/node": "22.17.1",
     "@types/react": "19.1.10",
     "@types/react-dom": "19.1.7",
     "eslint": "9.33.0",
