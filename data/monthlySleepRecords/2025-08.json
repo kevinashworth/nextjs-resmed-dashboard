@@ -1,0 +1,170 @@
+{
+  "data": {
+    "getPatientWrapper": {
+      "patient": {
+        "id": "1234567890",
+        "__typename": "Patient"
+      },
+      "sleepRecords": {
+        "items": [
+          {
+            "startDate": "2025-08-01",
+            "totalUsage": 565,
+            "sleepScore": 93,
+            "usageScore": 70,
+            "ahiScore": 5,
+            "maskScore": 5,
+            "leakScore": 13,
+            "ahi": 0.8,
+            "maskPairCount": 2,
+            "leakPercentile": 30,
+            "sleepRecordPatientId": "1234567890",
+            "__typename": "SleepRecord"
+          },
+          {
+            "startDate": "2025-08-02",
+            "totalUsage": 434,
+            "sleepScore": 98,
+            "usageScore": 70,
+            "ahiScore": 5,
+            "maskScore": 5,
+            "leakScore": 18,
+            "ahi": 0.4,
+            "maskPairCount": 1,
+            "leakPercentile": 19.2,
+            "sleepRecordPatientId": "1234567890",
+            "__typename": "SleepRecord"
+          },
+          {
+            "startDate": "2025-08-03",
+            "totalUsage": 502,
+            "sleepScore": 98,
+            "usageScore": 70,
+            "ahiScore": 5,
+            "maskScore": 3,
+            "leakScore": 20,
+            "ahi": 0.7,
+            "maskPairCount": 4,
+            "leakPercentile": 14.4,
+            "sleepRecordPatientId": "1234567890",
+            "__typename": "SleepRecord"
+          },
+          {
+            "startDate": "2025-08-04",
+            "totalUsage": 401,
+            "sleepScore": 82,
+            "usageScore": 67,
+            "ahiScore": 5,
+            "maskScore": 3,
+            "leakScore": 7,
+            "ahi": 3.5,
+            "maskPairCount": 4,
+            "leakPercentile": 42,
+            "sleepRecordPatientId": "1234567890",
+            "__typename": "SleepRecord"
+          },
+          {
+            "startDate": "2025-08-05",
+            "totalUsage": 449,
+            "sleepScore": 99,
+            "usageScore": 70,
+            "ahiScore": 5,
+            "maskScore": 5,
+            "leakScore": 19,
+            "ahi": 0.6,
+            "maskPairCount": 1,
+            "leakPercentile": 18,
+            "sleepRecordPatientId": "1234567890",
+            "__typename": "SleepRecord"
+          },
+          {
+            "startDate": "2025-08-06",
+            "totalUsage": 444,
+            "sleepScore": 100,
+            "usageScore": 70,
+            "ahiScore": 5,
+            "maskScore": 5,
+            "leakScore": 20,
+            "ahi": 0.5,
+            "maskPairCount": 2,
+            "leakPercentile": 8.4,
+            "sleepRecordPatientId": "1234567890",
+            "__typename": "SleepRecord"
+          },
+          {
+            "startDate": "2025-08-07",
+            "totalUsage": 444,
+            "sleepScore": 95,
+            "usageScore": 70,
+            "ahiScore": 5,
+            "maskScore": 5,
+            "leakScore": 15,
+            "ahi": 0.2,
+            "maskPairCount": 2,
+            "leakPercentile": 25.2,
+            "sleepRecordPatientId": "1234567890",
+            "__typename": "SleepRecord"
+          },
+          {
+            "startDate": "2025-08-08",
+            "totalUsage": 526,
+            "sleepScore": 91,
+            "usageScore": 70,
+            "ahiScore": 5,
+            "maskScore": 5,
+            "leakScore": 11,
+            "ahi": 1.4,
+            "maskPairCount": 2,
+            "leakPercentile": 33.6,
+            "sleepRecordPatientId": "1234567890",
+            "__typename": "SleepRecord"
+          },
+          {
+            "startDate": "2025-08-09",
+            "totalUsage": 418,
+            "sleepScore": 90,
+            "usageScore": 70,
+            "ahiScore": 5,
+            "maskScore": 5,
+            "leakScore": 10,
+            "ahi": 1,
+            "maskPairCount": 1,
+            "leakPercentile": 34.8,
+            "sleepRecordPatientId": "1234567890",
+            "__typename": "SleepRecord"
+          },
+          {
+            "startDate": "2025-08-10",
+            "totalUsage": 466,
+            "sleepScore": 92,
+            "usageScore": 70,
+            "ahiScore": 5,
+            "maskScore": 5,
+            "leakScore": 12,
+            "ahi": 1.4,
+            "maskPairCount": 2,
+            "leakPercentile": 31.2,
+            "sleepRecordPatientId": "1234567890",
+            "__typename": "SleepRecord"
+          },
+          {
+            "startDate": "2025-08-11",
+            "totalUsage": 37,
+            "sleepScore": 36,
+            "usageScore": 6,
+            "ahiScore": 5,
+            "maskScore": 5,
+            "leakScore": 20,
+            "ahi": 0,
+            "maskPairCount": 1,
+            "leakPercentile": 2.4,
+            "sleepRecordPatientId": "1234567890",
+            "__typename": "SleepRecord"
+          }
+        ],
+        "__typename": "PaginatedSleepRecords"
+      },
+      "__typename": "PatientWrapper"
+    }
+  }
+}
