@@ -8,14 +8,14 @@ const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 import AutoSizer from "react-virtualized-auto-sizer";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { AllData, SelectedPreset, TabNames } from "@/lib/data-types";
+import type { TAllData, TSelectedPreset, TTabNames } from "@/lib/data-types";
 
 import { chartOptions, series } from "./chart-constants";
 import { movingAverage } from "./chart-utils";
 import MyTabTriggerTitle from "./my-tab-trigger-title";
 
-function PageContent({ data }: { data: AllData }) {
-  const [selectedPreset, setSelectedPreset] = useState<SelectedPreset>("last60");
+function PageContent({ data }: { data: TAllData }) {
+  const [selectedPreset, setSelectedPreset] = useState<TSelectedPreset>("last60");
   const [startDate, setStartDate] = useState(() => {
     const newestDate = new Date(data.newestDate);
     const sixtyDaysAgo = new Date(newestDate.getTime() - 60 * 24 * 60 * 60 * 1000);
@@ -97,7 +97,7 @@ function PageContent({ data }: { data: AllData }) {
   );
 
   const options = useMemo(() => {
-    const getChartOptions = (tab: TabNames) => {
+    const getChartOptions = (tab: TTabNames) => {
       const base = { ...chartOptions[tab] };
       return {
         ...base,
@@ -117,7 +117,7 @@ function PageContent({ data }: { data: AllData }) {
   }, [categories]);
 
   function handlePresetChange(event: ChangeEvent<HTMLSelectElement>) {
-    const nextPreset = event.target.value as SelectedPreset;
+    const nextPreset = event.target.value as TSelectedPreset;
     setSelectedPreset(nextPreset);
 
     const newestDate = new Date(data.newestDate);

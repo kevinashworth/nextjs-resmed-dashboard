@@ -1,8 +1,8 @@
 "use client";
 
 import { chartColors } from "@/lib/colors";
+import type { TTabNames } from "@/lib/data-types";
 
-import type { TabNames } from "./data-types";
 import type { ApexOptions } from "apexcharts";
 
 // https://stackoverflow.com/a/35970186/7082724
@@ -29,7 +29,7 @@ function padZero(str: string, len: number = 2) {
   const zeros = new Array(len).join("0");
   return (zeros + str).slice(-len);
 }
-export const tabMap: { [key: number]: TabNames } = {
+export const tabMap: { [key: number]: TTabNames } = {
   0: "hours",
   1: "leak",
   2: "events",
@@ -163,14 +163,14 @@ export const options: ApexOptions = {
   },
 };
 
-function getChartOptions(tab: TabNames): ApexOptions {
+function getChartOptions(tab: TTabNames): ApexOptions {
   return {
     ...options,
     yaxis: yAxisOptions[tab],
   };
 }
 
-export const chartOptions: Record<TabNames, ApexOptions> = {
+export const chartOptions: Record<TTabNames, ApexOptions> = {
   hours: getChartOptions("hours"),
   leak: getChartOptions("leak"),
   events: getChartOptions("events"),
@@ -178,7 +178,7 @@ export const chartOptions: Record<TabNames, ApexOptions> = {
   score: getChartOptions("score"),
 };
 
-export const series: Record<TabNames, { name?: string; type: string; data: number[]; color: string }[]> = {
+export const series: Record<TTabNames, { name?: string; type: string; data: number[]; color: string }[]> = {
   hours: [
     {
       name: "Usage Hours",

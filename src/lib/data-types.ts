@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const SleepRecordInput = z.object({
+const SleepRecordInputSchema = z.object({
   startDate: z.string(),
   ahi: z.number(),
   leakPercentile: z.number(),
@@ -8,18 +8,19 @@ const SleepRecordInput = z.object({
   sleepScore: z.number(),
   totalUsage: z.number(),
 });
-export const DataFile = z.object({
+
+export const DataFileSchema = z.object({
   data: z.object({
     getPatientWrapper: z.object({
       sleepRecords: z.object({
-        items: z.array(SleepRecordInput),
+        items: z.array(SleepRecordInputSchema),
       }),
     }),
   }),
 });
-export type DataFileType = z.infer<typeof DataFile>;
+export type TDataFile = z.infer<typeof DataFileSchema>;
 
-export type SleepRecordType = {
+export type TSleepRecord = {
   startDate: string;
   events: number;
   hours: number;
@@ -28,25 +29,25 @@ export type SleepRecordType = {
   score: number;
 };
 
-export type AllData = {
-  events: ChartData[];
-  leak: ChartData[];
-  mask: ChartData[];
-  score: ChartData[];
-  hours: ChartData[];
+export type TAllData = {
+  events: TChartData[];
+  leak: TChartData[];
+  mask: TChartData[];
+  score: TChartData[];
+  hours: TChartData[];
   oldestDate: string;
   newestDate: string;
   totalDates: number;
 };
 
-export interface ChartData {
+export interface TChartData {
   date: string;
   value: number;
 }
 
-export type TabNames = "events" | "hours" | "leak" | "mask" | "score";
+export type TTabNames = "events" | "hours" | "leak" | "mask" | "score";
 
-export type SelectedPreset =
+export type TSelectedPreset =
   | "last30"
   | "last60"
   | "last90"
