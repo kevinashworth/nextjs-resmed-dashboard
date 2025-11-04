@@ -1,6 +1,6 @@
-import type { ChartData } from "./data-types";
+import type { TChartData } from "@/lib/data-types";
 
-export const movingAverage = (data: ChartData[], windowSize: number) => {
+export const movingAverage = (data: TChartData[], windowSize: number) => {
   return data.map((row, index, total) => {
     const start = Math.max(0, index - windowSize);
     const end = index;

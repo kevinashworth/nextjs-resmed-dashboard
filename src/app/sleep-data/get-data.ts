@@ -3,19 +3,18 @@ import path from "path";
 
 import { glob } from "fast-glob";
 
-import { DataFile } from "./data-types";
-
-import type { AllData, ChartData, DataFileType, SleepRecordType } from "./data-types";
+import { DataFileSchema } from "@/lib/data-types";
+import type { TAllData, TChartData, TDataFile, TSleepRecord } from "@/lib/data-types";
 
 const getData = async () => {
   const dataPath = path.join(process.cwd(), "data");
   const months = await glob(`${dataPath}/monthlySleepRecords/*.json`);
 
-  const allMonthsData: DataFileType[] = await Promise.all(
+  const allMonthsData: TDataFile[] = await Promise.all(
     months.map(async (month) => {
       const file = await fs.readFile(month, "utf8");
       const data = JSON.parse(file);
-      const result = DataFile.safeParse(data);
+      const result = DataFileSchema.safeParse(data);
       if (!result.success) {
         console.error(`Error in file ${month}:`, result.error);
       }
@@ -23,7 +22,7 @@ const getData = async () => {
     }),
   );
 
-  const combinedData: SleepRecordType[] = allMonthsData
+  const combinedData: TSleepRecord[] = allMonthsData
     .flatMap((monthData) => monthData.data.getPatientWrapper.sleepRecords.items)
     .map((item) => ({
       startDate: item.startDate,
@@ -38,27 +37,27 @@ const getData = async () => {
   const newestDate = combinedData[combinedData.length - 1].startDate;
   const totalDates = combinedData.length;
 
-  const eventsData: ChartData[] = combinedData.map((item) => ({
+  const eventsData: TChartData[] = combinedData.map((item) => ({
     date: item.startDate,
     value: item.events,
   }));
-  const leakData: ChartData[] = combinedData.map((item) => ({
+  const leakData: TChartData[] = combinedData.map((item) => ({
     date: item.startDate,
     value: item.leak,
   }));
-  const maskData: ChartData[] = combinedData.map((item) => ({
+  const maskData: TChartData[] = combinedData.map((item) => ({
     date: item.startDate,
     value: item.mask,
   }));
-  const scoreData: ChartData[] = combinedData.map((item) => ({
+  const scoreData: TChartData[] = combinedData.map((item) => ({
     date: item.startDate,
     value: item.score,
   }));
-  const hoursData: ChartData[] = combinedData.map((item) => ({
+  const hoursData: TChartData[] = combinedData.map((item) => ({
     date: item.startDate,
     value: item.hours,
   }));
-  const allData: AllData = {
+  const allData: TAllData = {
     events: eventsData,
     hours: hoursData,
     mask: maskData,
