@@ -148,7 +148,7 @@ export const options: ApexOptions = {
     labels: {
       formatter: function (d) {
         const date = new Date(d);
-        return date.getDay() === 0 ? d.substring(5) : "";
+        return date.getDay() === 0 ? String(d).substring(5) : "";
       },
       style: {
         fontSize: "10px",
