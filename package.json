@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@tailwindcss/forms": "0.5.10",
-    "@tailwindcss/postcss": "4.1.17",
+    "@tailwindcss/postcss": "4.1.18",
     "@types/lodash.debounce": "4.0.9",
     "@types/node": "24.10.0",
     "@types/react": "19.2.7",
@@ -44,7 +44,7 @@
     "postcss": "8.5.6",
     "prettier": "3.7.4",
     "prettier-plugin-tailwindcss": "0.7.2",
-    "tailwindcss": "4.1.17",
+    "tailwindcss": "4.1.18",
     "typescript": "5.9.3"
   }
 }
