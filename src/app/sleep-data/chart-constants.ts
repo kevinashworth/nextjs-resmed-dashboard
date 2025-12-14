@@ -109,6 +109,17 @@ const yAxisOptions = {
 
 export const options: ApexOptions = {
   chart: {
+    animations: {
+      enabled: true,
+      speed: 500,
+      animateGradually: {
+        enabled: false,
+      },
+      dynamicAnimation: {
+        enabled: true,
+        speed: 350,
+      },
+    },
     fontFamily: "Inter, sans-serif",
     dropShadow: {
       enabled: false,
@@ -122,18 +133,15 @@ export const options: ApexOptions = {
   },
   tooltip: {
     enabled: true,
-    x: {
-      show: false,
-    },
   },
   fill: {
-    opacity: [0.75, 1],
+    type: "solid",
   },
   dataLabels: {
     enabled: false,
   },
   stroke: {
-    width: [1, 2],
+    width: [0, 4],
   },
   grid: {
     show: true,
@@ -145,15 +153,7 @@ export const options: ApexOptions = {
     },
   },
   xaxis: {
-    labels: {
-      formatter: function (d) {
-        const date = new Date(d);
-        return date.getDay() === 0 ? String(d).substring(5) : "";
-      },
-      style: {
-        fontSize: "10px",
-      },
-    },
+    type: "datetime",
     axisBorder: {
       show: false,
     },

@@ -2,8 +2,6 @@
 
 @plugin "@tailwindcss/forms";
 
-@custom-variant dark (&:is(class *));
-
 @theme {
   --color-accent-50: oklch(0.9777777777777777 0.0114 40);
   --color-accent-100: oklch(0.9355555555555556 0.0331 40);

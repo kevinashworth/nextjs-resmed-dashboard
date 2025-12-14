@@ -43,7 +43,7 @@ function MyTabTriggerTitle({ name = "events", title = "Events" }: Props) {
     <div className="flex flex-col items-center justify-start">
       <IconComponent className={cx(fillClass[name], "size-12")} />
       <h2 className="text-xs font-medium whitespace-nowrap text-gray-500 uppercase">{title}</h2>
-      <div className="h-0 w-32 bg-white in-[.active]:bg-gray-50"></div>
+      <div className="h-0 w-24 bg-white in-[.active]:bg-gray-50"></div>
     </div>
   );
 }

@@ -157,6 +157,20 @@
             "leakPercentile": 13.2,
             "sleepRecordPatientId": "1234567890",
             "__typename": "SleepRecord"
+          },
+          {
+            "startDate": "2025-12-12",
+            "totalUsage": 486,
+            "sleepScore": 95,
+            "usageScore": 70,
+            "ahiScore": 5,
+            "maskScore": 4,
+            "leakScore": 16,
+            "ahi": 0.4,
+            "maskPairCount": 3,
+            "leakPercentile": 24.0,
+            "sleepRecordPatientId": "1234567890",
+            "__typename": "SleepRecord"
           }
         ],
         "__typename": "PaginatedSleepRecords"
