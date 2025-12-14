@@ -15,7 +15,7 @@ import { movingAverage } from "./chart-utils";
 import MyTabTriggerTitle from "./my-tab-trigger-title";
 
 function PageContent({ data }: { data: TAllData }) {
-  const [selectedPreset, setSelectedPreset] = useState<TSelectedPreset>("last60");
+  const [selectedPreset, setSelectedPreset] = useState<TSelectedPreset>("last90");
   const [startDate, setStartDate] = useState(() => {
     const newestDate = new Date(data.newestDate);
     const sixtyDaysAgo = new Date(newestDate.getTime() - 60 * 24 * 60 * 60 * 1000);
@@ -266,43 +266,45 @@ function PageContent({ data }: { data: TAllData }) {
         </div>
       </div>
 
-      <div className="h-[60vh] w-full px-8">
+      <div className="h-[60vh] w-full pr-8">
         <AutoSizer>
           {({ height, width }) => (
             <div>
-              <Tabs defaultValue="hours" className="w-[400px]">
-                <TabsList>
-                  <TabsTrigger
-                    value="hours"
-                    className="data-[state=active]:border-hours/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
-                  >
-                    <MyTabTriggerTitle name="hours" title="Usage Hours" />
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="leak"
-                    className="data-[state=active]:border-leak/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
-                  >
-                    <MyTabTriggerTitle name="leak" title="Mask Seal" />
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="events"
-                    className="data-[state=active]:border-events/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
-                  >
-                    <MyTabTriggerTitle name="events" title="Events" />
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="mask"
-                    className="data-[state=active]:border-mask/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
-                  >
-                    <MyTabTriggerTitle name="mask" title="Mask On/Off" />
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="score"
-                    className="data-[state=active]:border-score/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
-                  >
-                    <MyTabTriggerTitle name="score" title="myAir Score" />
-                  </TabsTrigger>
-                </TabsList>
+              <Tabs defaultValue="hours">
+                <div className="pl-10">
+                  <TabsList>
+                    <TabsTrigger
+                      value="hours"
+                      className="data-[state=active]:border-hours/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
+                    >
+                      <MyTabTriggerTitle name="hours" title="Usage Hours" />
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="leak"
+                      className="data-[state=active]:border-leak/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
+                    >
+                      <MyTabTriggerTitle name="leak" title="Mask Seal" />
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="events"
+                      className="data-[state=active]:border-events/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
+                    >
+                      <MyTabTriggerTitle name="events" title="Events" />
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="mask"
+                      className="data-[state=active]:border-mask/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
+                    >
+                      <MyTabTriggerTitle name="mask" title="Mask On/Off" />
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="score"
+                      className="data-[state=active]:border-score/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
+                    >
+                      <MyTabTriggerTitle name="score" title="myAir Score" />
+                    </TabsTrigger>
+                  </TabsList>
+                </div>
                 <TabsContent value="hours">
                   <Chart options={options.hours} series={chartSeries.hours} height={height} width={width} />
                 </TabsContent>

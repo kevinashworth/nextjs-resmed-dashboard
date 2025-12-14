@@ -141,7 +141,7 @@ export const options: ApexOptions = {
     enabled: false,
   },
   stroke: {
-    width: 2,
+    width: [0, 4],
   },
   grid: {
     show: true,
