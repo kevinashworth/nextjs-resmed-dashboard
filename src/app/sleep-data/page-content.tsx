@@ -14,12 +14,16 @@ import { chartOptions, series } from "./chart-constants";
 import { movingAverage } from "./chart-utils";
 import MyTabTriggerTitle from "./my-tab-trigger-title";
 
+const INITIAL_STARTDATE_DAYS_AGO = 90; // 30, 60, 90, 180, 365
+const INITIAL_SELECTED_PRESET = ("last" + INITIAL_STARTDATE_DAYS_AGO) as TSelectedPreset;
+const INITIAL_TAB: TTabNames = "score";
+
 function PageContent({ data }: { data: TAllData }) {
-  const [selectedPreset, setSelectedPreset] = useState<TSelectedPreset>("last90");
+  const [selectedPreset, setSelectedPreset] = useState<TSelectedPreset>(INITIAL_SELECTED_PRESET);
   const [startDate, setStartDate] = useState(() => {
     const newestDate = new Date(data.newestDate);
-    const sixtyDaysAgo = new Date(newestDate.getTime() - 60 * 24 * 60 * 60 * 1000);
-    return sixtyDaysAgo.toISOString().split("T")[0];
+    const xDaysAgo = new Date(newestDate.getTime() - INITIAL_STARTDATE_DAYS_AGO * 24 * 60 * 60 * 1000);
+    return xDaysAgo.toISOString().split("T")[0];
   });
   const [endDate, setEndDate] = useState(data.newestDate);
 
@@ -270,7 +274,7 @@ function PageContent({ data }: { data: TAllData }) {
         <AutoSizer>
           {({ height, width }) => (
             <div>
-              <Tabs defaultValue="hours">
+              <Tabs defaultValue={INITIAL_TAB}>
                 <div className="pl-10">
                   <TabsList>
                     <TabsTrigger
