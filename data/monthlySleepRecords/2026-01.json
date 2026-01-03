@@ -1,0 +1,30 @@
+{
+  "data": {
+    "getPatientWrapper": {
+      "patient": {
+        "id": "1234567890",
+        "__typename": "Patient"
+      },
+      "sleepRecords": {
+        "items": [
+          {
+            "startDate": "2026-01-01",
+            "totalUsage": 468,
+            "sleepScore": 97,
+            "usageScore": 70,
+            "ahiScore": 5,
+            "maskScore": 5,
+            "leakScore": 17,
+            "ahi": 0.7,
+            "maskPairCount": 2,
+            "leakPercentile": 21.6,
+            "sleepRecordPatientId": "1234567890",
+            "__typename": "SleepRecord"
+          }
+        ],
+        "__typename": "PaginatedSleepRecords"
+      },
+      "__typename": "PatientWrapper"
+    }
+  }
+}
