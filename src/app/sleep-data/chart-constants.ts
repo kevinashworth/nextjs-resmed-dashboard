@@ -133,6 +133,9 @@ export const options: ApexOptions = {
   },
   tooltip: {
     enabled: true,
+    x: {
+      format: "dd MMM yyyy",
+    },
   },
   fill: {
     type: "solid",
@@ -158,7 +161,17 @@ export const options: ApexOptions = {
       show: false,
     },
     axisTicks: {
-      show: false,
+      show: true,
+      color: "#666",
+    },
+    labels: {
+      show: true,
+      hideOverlappingLabels: false,
+      datetimeFormatter: {
+        year: "yyyy",
+        month: "MMM yyyy",
+        day: "d MMM",
+      },
     },
   },
 };
