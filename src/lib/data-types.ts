@@ -22,6 +22,7 @@ export type TDataFile = z.infer<typeof DataFileSchema>;
 
 export type TSleepRecord = {
   startDate: string;
+  timestamp: number;
   events: number;
   hours: number;
   leak: number;
@@ -42,6 +43,7 @@ export type TAllData = {
 
 export interface TChartData {
   date: string;
+  timestamp: number;
   value: number;
 }
 

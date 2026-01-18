@@ -26,23 +26,26 @@ function PageContent({ data }: { data: TAllData }) {
     return xDaysAgo.toISOString().split("T")[0];
   });
   const [endDate, setEndDate] = useState(data.newestDate);
+  const startTs = new Date(startDate).getTime();
+  const endTs = new Date(endDate).getTime();
 
   const filteredData = useMemo(() => {
-    const dateFilter = (d: { date: string | number | Date }): boolean => {
-      const date = new Date(d.date);
-      return date >= new Date(startDate) && date <= new Date(endDate);
+    const timestampFilter = (record: { timestamp: number }): boolean => {
+      if (startTs === undefined || endTs === undefined) return true;
+      return record.timestamp >= startTs && record.timestamp <= endTs;
     };
 
     return {
-      events: data.events.filter(dateFilter),
-      hours: data.hours.filter(dateFilter),
-      leak: data.leak.filter(dateFilter),
-      mask: data.mask.filter(dateFilter),
-      score: data.score.filter(dateFilter),
+      events: data.events.filter(timestampFilter),
+      hours: data.hours.filter(timestampFilter),
+      leak: data.leak.filter(timestampFilter),
+      mask: data.mask.filter(timestampFilter),
+      score: data.score.filter(timestampFilter),
     };
   }, [data, startDate, endDate]);
 
-  const categories = useMemo(() => filteredData.events.map((d) => d.date), [filteredData.events]);
+  // Dates are the x-axis labels. See https://apexcharts.com/docs/options/xaxis/#categories
+  const xaxisLabels = useMemo(() => filteredData.events.map((d) => d.date), [filteredData.events]);
 
   const chartSeries = useMemo(
     () => ({
@@ -107,7 +110,7 @@ function PageContent({ data }: { data: TAllData }) {
         ...base,
         xaxis: {
           ...base.xaxis,
-          categories,
+          categories: xaxisLabels,
         },
       };
     };
@@ -118,7 +121,7 @@ function PageContent({ data }: { data: TAllData }) {
       mask: getChartOptions("mask"),
       score: getChartOptions("score"),
     };
-  }, [categories]);
+  }, [xaxisLabels]);
 
   function handlePresetChange(event: ChangeEvent<HTMLSelectElement>) {
     const nextPreset = event.target.value as TSelectedPreset;
@@ -134,7 +137,6 @@ function PageContent({ data }: { data: TAllData }) {
         start = thirtyDaysAgo;
         break;
       }
-      // default
       case "last60": {
         const sixtyDaysAgo = new Date(newestDate.getTime() - 60 * 24 * 60 * 60 * 1000);
         start = sixtyDaysAgo;
