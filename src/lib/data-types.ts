@@ -42,9 +42,13 @@ export type TAllData = {
 };
 
 export interface TChartData {
-  date: string;
   timestamp: number;
   value: number;
+}
+
+export interface TChartDataPoint {
+  x: number;
+  y: number;
 }
 
 export type TTabNames = "events" | "hours" | "leak" | "mask" | "score";

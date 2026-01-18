@@ -42,86 +42,66 @@ function PageContent({ data }: { data: TAllData }) {
       mask: data.mask.filter(timestampFilter),
       score: data.score.filter(timestampFilter),
     };
-  }, [data, startDate, endDate]);
+  }, [data, startTs, endTs]);
 
-  // Dates are the x-axis labels. See https://apexcharts.com/docs/options/xaxis/#categories
-  const xaxisLabels = useMemo(() => filteredData.events.map((d) => d.date), [filteredData.events]);
+  // Using x/y series with numeric timestamps for ApexCharts (x = timestamp, y = value)
+  // No need for x-axis categories when series points include x timestamps.
 
   const chartSeries = useMemo(
     () => ({
       hours: [
         {
           ...series.hours[0],
-          data: filteredData.hours.map((d) => d.value),
+          data: filteredData.hours.map((d) => ({ x: d.timestamp, y: d.value })),
         },
         {
           ...series.hours[1],
-          data: movingAverage(filteredData.hours, 7).map((d) => d.value),
+          data: movingAverage(filteredData.hours, 7).map((d) => ({ x: d.timestamp, y: d.value })),
         },
       ],
       leak: [
         {
           ...series.leak[0],
-          data: filteredData.leak.map((d) => d.value),
+          data: filteredData.leak.map((d) => ({ x: d.timestamp, y: d.value })),
         },
         {
           ...series.leak[1],
-          data: movingAverage(filteredData.leak, 7).map((d) => d.value),
+          data: movingAverage(filteredData.leak, 7).map((d) => ({ x: d.timestamp, y: d.value })),
         },
       ],
       events: [
         {
           ...series.events[0],
-          data: filteredData.events.map((d) => d.value),
+          data: filteredData.events.map((d) => ({ x: d.timestamp, y: d.value })),
         },
         {
           ...series.events[1],
-          data: movingAverage(filteredData.events, 7).map((d) => d.value),
+          data: movingAverage(filteredData.events, 7).map((d) => ({ x: d.timestamp, y: d.value })),
         },
       ],
       mask: [
         {
           ...series.mask[0],
-          data: filteredData.mask.map((d) => d.value),
+          data: filteredData.mask.map((d) => ({ x: d.timestamp, y: d.value })),
         },
         {
           ...series.mask[1],
-          data: movingAverage(filteredData.mask, 7).map((d) => d.value),
+          data: movingAverage(filteredData.mask, 7).map((d) => ({ x: d.timestamp, y: d.value })),
         },
       ],
       score: [
         {
           ...series.score[0],
-          data: filteredData.score.map((d) => d.value),
+          data: filteredData.score.map((d) => ({ x: d.timestamp, y: d.value })),
         },
         {
           ...series.score[1],
-          data: movingAverage(filteredData.score, 7).map((d) => d.value),
+          data: movingAverage(filteredData.score, 7).map((d) => ({ x: d.timestamp, y: d.value })),
         },
       ],
     }),
     [filteredData],
   );
-
-  const options = useMemo(() => {
-    const getChartOptions = (tab: TTabNames) => {
-      const base = { ...chartOptions[tab] };
-      return {
-        ...base,
-        xaxis: {
-          ...base.xaxis,
-          categories: xaxisLabels,
-        },
-      };
-    };
-    return {
-      hours: getChartOptions("hours"),
-      leak: getChartOptions("leak"),
-      events: getChartOptions("events"),
-      mask: getChartOptions("mask"),
-      score: getChartOptions("score"),
-    };
-  }, [xaxisLabels]);
 
   function handlePresetChange(event: ChangeEvent<HTMLSelectElement>) {
     const nextPreset = event.target.value as TSelectedPreset;
@@ -312,19 +292,19 @@ function PageContent({ data }: { data: TAllData }) {
                   </TabsList>
                 </div>
                 <TabsContent value="hours">
-                  <Chart options={options.hours} series={chartSeries.hours} height={height} width={width} />
+                  <Chart options={chartOptions.hours} series={chartSeries.hours} height={height} width={width} />
                 </TabsContent>
                 <TabsContent value="leak">
-                  <Chart options={options.leak} series={chartSeries.leak} height={height} width={width} />
+                  <Chart options={chartOptions.leak} series={chartSeries.leak} height={height} width={width} />
                 </TabsContent>
                 <TabsContent value="events">
-                  <Chart options={options.events} series={chartSeries.events} height={height} width={width} />
+                  <Chart options={chartOptions.events} series={chartSeries.events} height={height} width={width} />
                 </TabsContent>
                 <TabsContent value="mask">
-                  <Chart options={options.mask} series={chartSeries.mask} height={height} width={width} />
+                  <Chart options={chartOptions.mask} series={chartSeries.mask} height={height} width={width} />
                 </TabsContent>
                 <TabsContent value="score">
-                  <Chart options={options.score} series={chartSeries.score} height={height} width={width} />
+                  <Chart options={chartOptions.score} series={chartSeries.score} height={height} width={width} />
                 </TabsContent>
               </Tabs>
             </div>

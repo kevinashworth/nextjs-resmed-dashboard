@@ -41,27 +41,22 @@ const getData = async () => {
   const totalDates = combinedData.length;
 
   const eventsData: TChartData[] = combinedData.map((item) => ({
-    date: item.startDate,
     timestamp: item.timestamp,
     value: item.events,
   }));
   const leakData: TChartData[] = combinedData.map((item) => ({
-    date: item.startDate,
     timestamp: item.timestamp,
     value: item.leak,
   }));
   const maskData: TChartData[] = combinedData.map((item) => ({
-    date: item.startDate,
     timestamp: item.timestamp,
     value: item.mask,
   }));
   const scoreData: TChartData[] = combinedData.map((item) => ({
-    date: item.startDate,
     timestamp: item.timestamp,
     value: item.score,
   }));
   const hoursData: TChartData[] = combinedData.map((item) => ({
-    date: item.startDate,
     timestamp: item.timestamp,
     value: item.hours,
   }));
