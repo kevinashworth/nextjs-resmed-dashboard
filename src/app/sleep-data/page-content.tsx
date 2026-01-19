@@ -5,7 +5,7 @@ import type { ChangeEvent } from "react";
 
 import dynamic from "next/dynamic";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-import AutoSizer from "react-virtualized-auto-sizer";
+import { AutoSizer } from "react-virtualized-auto-sizer";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { TAllData, TSelectedPreset, TTabNames } from "@/lib/data-types";
@@ -46,7 +46,6 @@ function PageContent({ data }: { data: TAllData }) {
 
   // Using x/y series with numeric timestamps for ApexCharts (x = timestamp, y = value)
   // No need for x-axis categories when series points include x timestamps.
-
   const chartSeries = useMemo(
     () => ({
       hours: [
@@ -190,7 +189,7 @@ function PageContent({ data }: { data: TAllData }) {
     <div>
       {/* <!-- Date Range Controls --> */}
       <div className="mb-6 inline-block rounded-lg p-4">
-        <h1 className="text-accent-500 mb-4 text-xl font-bold">
+        <h1 className="mb-4 text-xl font-bold text-accent-500">
           My{" "}
           <span className="text-accent-600">
             Resmed <span className="font-normal">my</span>Air
@@ -199,7 +198,7 @@ function PageContent({ data }: { data: TAllData }) {
         </h1>
         <div className="flex flex-row items-start gap-4">
           <div className="flex items-center gap-3">
-            <label htmlFor="preset-range" className="text-accent-500 text-sm font-semibold whitespace-nowrap">
+            <label htmlFor="preset-range" className="text-sm font-semibold whitespace-nowrap text-accent-500">
               Date Range
             </label>
             <select
@@ -252,64 +251,68 @@ function PageContent({ data }: { data: TAllData }) {
         </div>
       </div>
 
-      <div className="h-[60vh] w-full pr-8">
-        <AutoSizer>
-          {({ height, width }) => (
+      <div className="h-[60vh] w-full pr-8 2xl:h-[65vh] 3xl:h-[70vh]">
+        <AutoSizer
+          renderProp={({ height, width }) => (
             <div>
               <Tabs defaultValue={INITIAL_TAB}>
                 <div className="pl-10">
                   <TabsList>
                     <TabsTrigger
                       value="hours"
-                      className="data-[state=active]:border-hours/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
+                      className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-hours/80 data-[state=active]:p-4"
                     >
                       <MyTabTriggerTitle name="hours" title="Usage Hours" />
                     </TabsTrigger>
                     <TabsTrigger
                       value="leak"
-                      className="data-[state=active]:border-leak/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
+                      className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-leak/80 data-[state=active]:p-4"
                     >
                       <MyTabTriggerTitle name="leak" title="Mask Seal" />
                     </TabsTrigger>
                     <TabsTrigger
                       value="events"
-                      className="data-[state=active]:border-events/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
+                      className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-events/80 data-[state=active]:p-4"
                     >
                       <MyTabTriggerTitle name="events" title="Events" />
                     </TabsTrigger>
                     <TabsTrigger
                       value="mask"
-                      className="data-[state=active]:border-mask/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
+                      className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-mask/80 data-[state=active]:p-4"
                     >
                       <MyTabTriggerTitle name="mask" title="Mask On/Off" />
                     </TabsTrigger>
                     <TabsTrigger
                       value="score"
-                      className="data-[state=active]:border-score/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
+                      className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-score/80 data-[state=active]:p-4"
                     >
                       <MyTabTriggerTitle name="score" title="myAir Score" />
                     </TabsTrigger>
                   </TabsList>
                 </div>
-                <TabsContent value="hours">
-                  <Chart options={chartOptions.hours} series={chartSeries.hours} height={height} width={width} />
-                </TabsContent>
-                <TabsContent value="leak">
-                  <Chart options={chartOptions.leak} series={chartSeries.leak} height={height} width={width} />
-                </TabsContent>
-                <TabsContent value="events">
-                  <Chart options={chartOptions.events} series={chartSeries.events} height={height} width={width} />
-                </TabsContent>
-                <TabsContent value="mask">
-                  <Chart options={chartOptions.mask} series={chartSeries.mask} height={height} width={width} />
-                </TabsContent>
-                <TabsContent value="score">
-                  <Chart options={chartOptions.score} series={chartSeries.score} height={height} width={width} />
-                </TabsContent>
+                {!height || !width ? null : (
+                  <>
+                    <TabsContent value="hours">
+                      <Chart options={chartOptions.hours} series={chartSeries.hours} height={height} width={width} />
+                    </TabsContent>
+                    <TabsContent value="leak">
+                      <Chart options={chartOptions.leak} series={chartSeries.leak} height={height} width={width} />
+                    </TabsContent>
+                    <TabsContent value="events">
+                      <Chart options={chartOptions.events} series={chartSeries.events} height={height} width={width} />
+                    </TabsContent>
+                    <TabsContent value="mask">
+                      <Chart options={chartOptions.mask} series={chartSeries.mask} height={height} width={width} />
+                    </TabsContent>
+                    <TabsContent value="score">
+                      <Chart options={chartOptions.score} series={chartSeries.score} height={height} width={width} />
+                    </TabsContent>
+                  </>
+                )}
               </Tabs>
             </div>
           )}
-        </AutoSizer>
+        />
       </div>
     </div>
   );
