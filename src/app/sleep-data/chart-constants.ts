@@ -1,7 +1,7 @@
 "use client";
 
 import { chartColors } from "@/lib/colors";
-import type { TTabNames } from "@/lib/data-types";
+import type { TChartDataPoint, TTabNames } from "@/lib/data-types";
 
 import type { ApexOptions } from "apexcharts";
 
@@ -191,7 +191,7 @@ export const chartOptions: Record<TTabNames, ApexOptions> = {
   score: getChartOptions("score"),
 };
 
-export const series: Record<TTabNames, { name?: string; type: string; data: number[]; color: string }[]> = {
+export const series: Record<TTabNames, { name?: string; type: string; data: TChartDataPoint[]; color: string }[]> = {
   hours: [
     {
       name: "Usage Hours",

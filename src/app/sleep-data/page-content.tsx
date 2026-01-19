@@ -5,7 +5,7 @@ import type { ChangeEvent } from "react";
 
 import dynamic from "next/dynamic";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-import AutoSizer from "react-virtualized-auto-sizer";
+import { AutoSizer } from "react-virtualized-auto-sizer";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { TAllData, TSelectedPreset, TTabNames } from "@/lib/data-types";
@@ -26,99 +26,81 @@ function PageContent({ data }: { data: TAllData }) {
     return xDaysAgo.toISOString().split("T")[0];
   });
   const [endDate, setEndDate] = useState(data.newestDate);
+  const startTs = new Date(startDate).getTime();
+  const endTs = new Date(endDate).getTime();
 
   const filteredData = useMemo(() => {
-    const dateFilter = (d: { date: string | number | Date }): boolean => {
-      const date = new Date(d.date);
-      return date >= new Date(startDate) && date <= new Date(endDate);
+    const timestampFilter = (record: { timestamp: number }): boolean => {
+      if (startTs === undefined || endTs === undefined) return true;
+      return record.timestamp >= startTs && record.timestamp <= endTs;
     };
 
     return {
-      events: data.events.filter(dateFilter),
-      hours: data.hours.filter(dateFilter),
-      leak: data.leak.filter(dateFilter),
-      mask: data.mask.filter(dateFilter),
-      score: data.score.filter(dateFilter),
+      events: data.events.filter(timestampFilter),
+      hours: data.hours.filter(timestampFilter),
+      leak: data.leak.filter(timestampFilter),
+      mask: data.mask.filter(timestampFilter),
+      score: data.score.filter(timestampFilter),
     };
-  }, [data, startDate, endDate]);
+  }, [data, startTs, endTs]);
 
-  const categories = useMemo(() => filteredData.events.map((d) => d.date), [filteredData.events]);
-
+  // Using x/y series with numeric timestamps for ApexCharts (x = timestamp, y = value)
+  // No need for x-axis categories when series points include x timestamps.
   const chartSeries = useMemo(
     () => ({
       hours: [
         {
           ...series.hours[0],
-          data: filteredData.hours.map((d) => d.value),
+          data: filteredData.hours.map((d) => ({ x: d.timestamp, y: d.value })),
         },
         {
           ...series.hours[1],
-          data: movingAverage(filteredData.hours, 7).map((d) => d.value),
+          data: movingAverage(filteredData.hours, 7).map((d) => ({ x: d.timestamp, y: d.value })),
         },
       ],
       leak: [
         {
           ...series.leak[0],
-          data: filteredData.leak.map((d) => d.value),
+          data: filteredData.leak.map((d) => ({ x: d.timestamp, y: d.value })),
         },
         {
           ...series.leak[1],
-          data: movingAverage(filteredData.leak, 7).map((d) => d.value),
+          data: movingAverage(filteredData.leak, 7).map((d) => ({ x: d.timestamp, y: d.value })),
         },
       ],
       events: [
         {
           ...series.events[0],
-          data: filteredData.events.map((d) => d.value),
+          data: filteredData.events.map((d) => ({ x: d.timestamp, y: d.value })),
         },
         {
           ...series.events[1],
-          data: movingAverage(filteredData.events, 7).map((d) => d.value),
+          data: movingAverage(filteredData.events, 7).map((d) => ({ x: d.timestamp, y: d.value })),
         },
       ],
       mask: [
         {
           ...series.mask[0],
-          data: filteredData.mask.map((d) => d.value),
+          data: filteredData.mask.map((d) => ({ x: d.timestamp, y: d.value })),
         },
         {
           ...series.mask[1],
-          data: movingAverage(filteredData.mask, 7).map((d) => d.value),
+          data: movingAverage(filteredData.mask, 7).map((d) => ({ x: d.timestamp, y: d.value })),
         },
       ],
       score: [
         {
           ...series.score[0],
-          data: filteredData.score.map((d) => d.value),
+          data: filteredData.score.map((d) => ({ x: d.timestamp, y: d.value })),
         },
         {
           ...series.score[1],
-          data: movingAverage(filteredData.score, 7).map((d) => d.value),
+          data: movingAverage(filteredData.score, 7).map((d) => ({ x: d.timestamp, y: d.value })),
         },
       ],
     }),
     [filteredData],
   );
-
-  const options = useMemo(() => {
-    const getChartOptions = (tab: TTabNames) => {
-      const base = { ...chartOptions[tab] };
-      return {
-        ...base,
-        xaxis: {
-          ...base.xaxis,
-          categories,
-        },
-      };
-    };
-    return {
-      hours: getChartOptions("hours"),
-      leak: getChartOptions("leak"),
-      events: getChartOptions("events"),
-      mask: getChartOptions("mask"),
-      score: getChartOptions("score"),
-    };
-  }, [categories]);
 
   function handlePresetChange(event: ChangeEvent<HTMLSelectElement>) {
     const nextPreset = event.target.value as TSelectedPreset;
@@ -134,7 +116,6 @@ function PageContent({ data }: { data: TAllData }) {
         start = thirtyDaysAgo;
         break;
       }
-      // default
       case "last60": {
         const sixtyDaysAgo = new Date(newestDate.getTime() - 60 * 24 * 60 * 60 * 1000);
         start = sixtyDaysAgo;
@@ -208,7 +189,7 @@ function PageContent({ data }: { data: TAllData }) {
     <div>
       {/* <!-- Date Range Controls --> */}
       <div className="mb-6 inline-block rounded-lg p-4">
-        <h1 className="text-accent-500 mb-4 text-xl font-bold">
+        <h1 className="mb-4 text-xl font-bold text-accent-500">
           My{" "}
           <span className="text-accent-600">
             Resmed <span className="font-normal">my</span>Air
@@ -217,7 +198,7 @@ function PageContent({ data }: { data: TAllData }) {
         </h1>
         <div className="flex flex-row items-start gap-4">
           <div className="flex items-center gap-3">
-            <label htmlFor="preset-range" className="text-accent-500 text-sm font-semibold whitespace-nowrap">
+            <label htmlFor="preset-range" className="text-sm font-semibold whitespace-nowrap text-accent-500">
               Date Range
             </label>
             <select
@@ -270,64 +251,68 @@ function PageContent({ data }: { data: TAllData }) {
         </div>
       </div>
 
-      <div className="h-[60vh] w-full pr-8">
-        <AutoSizer>
-          {({ height, width }) => (
+      <div className="h-[60vh] w-full pr-8 2xl:h-[65vh] 3xl:h-[70vh]">
+        <AutoSizer
+          renderProp={({ height, width }) => (
             <div>
               <Tabs defaultValue={INITIAL_TAB}>
                 <div className="pl-10">
                   <TabsList>
                     <TabsTrigger
                       value="hours"
-                      className="data-[state=active]:border-hours/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
+                      className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-hours/80 data-[state=active]:p-4"
                     >
                       <MyTabTriggerTitle name="hours" title="Usage Hours" />
                     </TabsTrigger>
                     <TabsTrigger
                       value="leak"
-                      className="data-[state=active]:border-leak/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
+                      className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-leak/80 data-[state=active]:p-4"
                     >
                       <MyTabTriggerTitle name="leak" title="Mask Seal" />
                     </TabsTrigger>
                     <TabsTrigger
                       value="events"
-                      className="data-[state=active]:border-events/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
+                      className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-events/80 data-[state=active]:p-4"
                     >
                       <MyTabTriggerTitle name="events" title="Events" />
                     </TabsTrigger>
                     <TabsTrigger
                       value="mask"
-                      className="data-[state=active]:border-mask/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
+                      className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-mask/80 data-[state=active]:p-4"
                     >
                       <MyTabTriggerTitle name="mask" title="Mask On/Off" />
                     </TabsTrigger>
                     <TabsTrigger
                       value="score"
-                      className="data-[state=active]:border-score/80 rounded-none data-[state=active]:border-b-2 data-[state=active]:p-4"
+                      className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-score/80 data-[state=active]:p-4"
                     >
                       <MyTabTriggerTitle name="score" title="myAir Score" />
                     </TabsTrigger>
                   </TabsList>
                 </div>
-                <TabsContent value="hours">
-                  <Chart options={options.hours} series={chartSeries.hours} height={height} width={width} />
-                </TabsContent>
-                <TabsContent value="leak">
-                  <Chart options={options.leak} series={chartSeries.leak} height={height} width={width} />
-                </TabsContent>
-                <TabsContent value="events">
-                  <Chart options={options.events} series={chartSeries.events} height={height} width={width} />
-                </TabsContent>
-                <TabsContent value="mask">
-                  <Chart options={options.mask} series={chartSeries.mask} height={height} width={width} />
-                </TabsContent>
-                <TabsContent value="score">
-                  <Chart options={options.score} series={chartSeries.score} height={height} width={width} />
-                </TabsContent>
+                {!height || !width ? null : (
+                  <>
+                    <TabsContent value="hours">
+                      <Chart options={chartOptions.hours} series={chartSeries.hours} height={height} width={width} />
+                    </TabsContent>
+                    <TabsContent value="leak">
+                      <Chart options={chartOptions.leak} series={chartSeries.leak} height={height} width={width} />
+                    </TabsContent>
+                    <TabsContent value="events">
+                      <Chart options={chartOptions.events} series={chartSeries.events} height={height} width={width} />
+                    </TabsContent>
+                    <TabsContent value="mask">
+                      <Chart options={chartOptions.mask} series={chartSeries.mask} height={height} width={width} />
+                    </TabsContent>
+                    <TabsContent value="score">
+                      <Chart options={chartOptions.score} series={chartSeries.score} height={height} width={width} />
+                    </TabsContent>
+                  </>
+                )}
               </Tabs>
             </div>
           )}
-        </AutoSizer>
+        />
       </div>
     </div>
   );

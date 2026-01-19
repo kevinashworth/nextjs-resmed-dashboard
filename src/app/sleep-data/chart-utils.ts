@@ -13,7 +13,7 @@ export const movingAverage = (data: TChartData[], windowSize: number) => {
     sum += data[i].value;
     count++;
     result.push({
-      date: data[i].date,
+      timestamp: data[i].timestamp,
       value: sum / count,
     });
   }
@@ -22,7 +22,7 @@ export const movingAverage = (data: TChartData[], windowSize: number) => {
   for (let i = windowSize; i < data.length; i++) {
     sum = sum + data[i].value - data[i - windowSize].value;
     result.push({
-      date: data[i].date,
+      timestamp: data[i].timestamp,
       value: sum / windowSize,
     });
   }
