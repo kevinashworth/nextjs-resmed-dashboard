@@ -41,6 +41,12 @@ function PageContent({ data }: { data: TAllData }) {
       leak: data.leak.filter(timestampFilter),
       mask: data.mask.filter(timestampFilter),
       score: data.score.filter(timestampFilter),
+      scoreBreakdown: {
+        usage: data.scoreBreakdown.usage.filter(timestampFilter),
+        ahi: data.scoreBreakdown.ahi.filter(timestampFilter),
+        mask: data.scoreBreakdown.mask.filter(timestampFilter),
+        leak: data.scoreBreakdown.leak.filter(timestampFilter),
+      },
     };
   }, [data, startTs, endTs]);
 
@@ -95,6 +101,28 @@ function PageContent({ data }: { data: TAllData }) {
         },
         {
           ...series.score[1],
+          data: movingAverage(filteredData.score, 7).map((d) => ({ x: d.timestamp, y: d.value })),
+        },
+      ],
+      scoreBreakdown: [
+        {
+          ...series.scoreBreakdown[0],
+          data: filteredData.scoreBreakdown.usage.map((d) => ({ x: d.timestamp, y: d.value })),
+        },
+        {
+          ...series.scoreBreakdown[1],
+          data: filteredData.scoreBreakdown.ahi.map((d) => ({ x: d.timestamp, y: d.value })),
+        },
+        {
+          ...series.scoreBreakdown[2],
+          data: filteredData.scoreBreakdown.mask.map((d) => ({ x: d.timestamp, y: d.value })),
+        },
+        {
+          ...series.scoreBreakdown[3],
+          data: filteredData.scoreBreakdown.leak.map((d) => ({ x: d.timestamp, y: d.value })),
+        },
+        {
+          ...series.scoreBreakdown[4],
           data: movingAverage(filteredData.score, 7).map((d) => ({ x: d.timestamp, y: d.value })),
         },
       ],
@@ -288,6 +316,12 @@ function PageContent({ data }: { data: TAllData }) {
                     >
                       <MyTabTriggerTitle name="score" title="myAir Score" />
                     </TabsTrigger>
+                    <TabsTrigger
+                      value="scoreBreakdown"
+                      className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-score/80 data-[state=active]:p-4"
+                    >
+                      <MyTabTriggerTitle name="scoreBreakdown" title="(Breakdown)" />
+                    </TabsTrigger>
                   </TabsList>
                 </div>
                 {!height || !width ? null : (
@@ -306,6 +340,14 @@ function PageContent({ data }: { data: TAllData }) {
                     </TabsContent>
                     <TabsContent value="score">
                       <Chart options={chartOptions.score} series={chartSeries.score} height={height} width={width} />
+                    </TabsContent>
+                    <TabsContent value="scoreBreakdown">
+                      <Chart
+                        options={chartOptions.scoreBreakdown}
+                        series={chartSeries.scoreBreakdown}
+                        height={height}
+                        width={width}
+                      />
                     </TabsContent>
                   </>
                 )}

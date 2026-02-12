@@ -19,6 +19,7 @@ const fillClass: FillClassMap = {
   leak: "fill-leak",
   mask: "fill-mask",
   score: "fill-score",
+  scoreBreakdown: "fill-score",
 };
 
 type IconComponentMap = {
@@ -30,6 +31,7 @@ const iconComponent: IconComponentMap = {
   leak: LeakIcon,
   mask: MaskIcon,
   score: ScoreIcon,
+  scoreBreakdown: ScoreIcon,
 };
 
 interface Props {
@@ -42,7 +44,7 @@ function MyTabTriggerTitle({ name = "events", title = "Events" }: Props) {
   return (
     <div className="flex flex-col items-center justify-start">
       <IconComponent className={cx(fillClass[name], "size-12")} />
-      <h2 className="text-xs font-medium whitespace-nowrap text-gray-500 uppercase">{title}</h2>
+      <h2 className="text-xs font-medium text-gray-500">{title}</h2>
       <div className="h-0 w-24 bg-white in-[.active]:bg-gray-50"></div>
     </div>
   );
