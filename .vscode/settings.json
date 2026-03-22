@@ -10,8 +10,13 @@
   "files.associations": {
     "*.css": "tailwindcss"
   },
-  "typescript.enablePromptUseWorkspaceTsdk": true,
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "file": ".copilot-commit-message-instructions.md"
+    }
+  ],
+  "js/ts.tsdk.promptToUseWorkspaceVersion": true,
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
   "[json]": {
     "editor.defaultFormatter": "vscode.json-language-features"
   },
