@@ -11,8 +11,8 @@
     "type-check": "tsc --noEmit"
   },
   "engines": {
-    "node": ">=22.0.0 <23.0.0",
-    "npm": ">=10.9.3 <11.0.0"
+    "node": ">=22.0.0",
+    "npm": ">=10.9.3"
   },
   "dependencies": {
     "@headlessui/react": "2.2.9",
