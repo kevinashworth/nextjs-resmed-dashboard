@@ -79,6 +79,7 @@ const yAxisOptionsMask = {
 };
 
 const yAxisOptionsScore = {
+  max: 100,
   title: {
     text: "Score",
   },
@@ -177,10 +178,38 @@ export const options: ApexOptions = {
 };
 
 function getChartOptions(tab: TTabNames): ApexOptions {
-  return {
+  // For the score breakdown we reuse the 'score' y-axis but enable stacked bars and legend
+  const yaxis = tab === "scoreBreakdown" ? yAxisOptions["score"] : yAxisOptions[tab];
+  const base: ApexOptions = {
     ...options,
-    yaxis: yAxisOptions[tab],
+    yaxis,
   };
+
+  if (tab === "scoreBreakdown") {
+    return {
+      ...base,
+      chart: {
+        ...(base.chart || {}),
+        stacked: true,
+      },
+      // Ensure columns have no stroke and the moving average line has a visible stroke
+      stroke: {
+        width: [0, 0, 0, 0, 4],
+      },
+      legend: {
+        ...(base.legend || {}),
+        show: true,
+      },
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          columnWidth: "60%",
+        },
+      },
+    };
+  }
+
+  return base;
 }
 
 export const chartOptions: Record<TTabNames, ApexOptions> = {
@@ -189,6 +218,7 @@ export const chartOptions: Record<TTabNames, ApexOptions> = {
   events: getChartOptions("events"),
   mask: getChartOptions("mask"),
   score: getChartOptions("score"),
+  scoreBreakdown: getChartOptions("scoreBreakdown"),
 };
 
 export const series: Record<TTabNames, { name?: string; type: string; data: TChartDataPoint[]; color: string }[]> = {
@@ -254,6 +284,38 @@ export const series: Record<TTabNames, { name?: string; type: string; data: TCha
       type: "column",
       data: [],
       color: chartColors.score,
+    },
+    {
+      name: "myAir Score Moving Average",
+      type: "line",
+      data: [],
+      color: invertColor(chartColors.score),
+    },
+  ],
+  scoreBreakdown: [
+    {
+      name: "Usage Hours",
+      type: "column",
+      data: [],
+      color: chartColors.hours,
+    },
+    {
+      name: "Events",
+      type: "column",
+      data: [],
+      color: chartColors.events,
+    },
+    {
+      name: "Mask On/Off",
+      type: "column",
+      data: [],
+      color: chartColors.mask,
+    },
+    {
+      name: "Mask Seal",
+      type: "column",
+      data: [],
+      color: chartColors.leak,
     },
     {
       name: "myAir Score Moving Average",

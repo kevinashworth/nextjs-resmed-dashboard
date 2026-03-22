@@ -34,6 +34,10 @@ const getData = async () => {
       mask: item.maskPairCount,
       score: item.sleepScore,
       hours: item.totalUsage,
+      usageScore: item.usageScore,
+      ahiScore: item.ahiScore,
+      maskScore: item.maskScore,
+      leakScore: item.leakScore,
     }));
 
   const oldestDate = combinedData[0].startDate;
@@ -60,12 +64,37 @@ const getData = async () => {
     timestamp: item.timestamp,
     value: item.hours,
   }));
+
+  // Score component series
+  const usageData: TChartData[] = combinedData.map((item) => ({
+    timestamp: item.timestamp,
+    value: item.usageScore,
+  }));
+  const ahiScoreData: TChartData[] = combinedData.map((item) => ({
+    timestamp: item.timestamp,
+    value: item.ahiScore,
+  }));
+  const maskScoreData: TChartData[] = combinedData.map((item) => ({
+    timestamp: item.timestamp,
+    value: item.maskScore,
+  }));
+  const leakScoreData: TChartData[] = combinedData.map((item) => ({
+    timestamp: item.timestamp,
+    value: item.leakScore,
+  }));
   const allData: TAllData = {
     events: eventsData,
     hours: hoursData,
     mask: maskData,
     leak: leakData,
     score: scoreData,
+    // include score breakdown component series
+    scoreBreakdown: {
+      usage: usageData,
+      ahi: ahiScoreData,
+      mask: maskScoreData,
+      leak: leakScoreData,
+    },
     oldestDate,
     newestDate,
     totalDates,

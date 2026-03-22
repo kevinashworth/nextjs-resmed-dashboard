@@ -7,6 +7,11 @@ const SleepRecordInputSchema = z.object({
   maskPairCount: z.number(),
   sleepScore: z.number(),
   totalUsage: z.number(),
+  // Component scores
+  usageScore: z.number(),
+  ahiScore: z.number(),
+  maskScore: z.number(),
+  leakScore: z.number(),
 });
 
 export const DataFileSchema = z.object({
@@ -28,6 +33,11 @@ export type TSleepRecord = {
   leak: number;
   mask: number;
   score: number;
+  // Component scores
+  usageScore: number;
+  ahiScore: number;
+  maskScore: number;
+  leakScore: number;
 };
 
 export type TAllData = {
@@ -36,6 +46,13 @@ export type TAllData = {
   mask: TChartData[];
   score: TChartData[];
   hours: TChartData[];
+  // Score breakdown components
+  scoreBreakdown: {
+    usage: TChartData[];
+    ahi: TChartData[];
+    mask: TChartData[];
+    leak: TChartData[];
+  };
   oldestDate: string;
   newestDate: string;
   totalDates: number;
@@ -51,7 +68,7 @@ export interface TChartDataPoint {
   y: number;
 }
 
-export type TTabNames = "events" | "hours" | "leak" | "mask" | "score";
+export type TTabNames = "events" | "hours" | "leak" | "mask" | "score" | "scoreBreakdown";
 
 export type TSelectedPreset =
   | "last30"
