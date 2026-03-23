@@ -1,0 +1,20 @@
+name: Renovate
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */6 * * *"
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: renovatebot/github-action@v46
+        with:
+          # RENOVATE_TOKEN must be a GitHub PAT with repo scope (and workflow
+          # scope if Renovate should update GitHub Actions dependencies).
+          # Add it under Settings → Secrets and variables → Actions → New secret.
+          token: ${{ secrets.RENOVATE_TOKEN }}
