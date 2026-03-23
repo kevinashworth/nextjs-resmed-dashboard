@@ -22,13 +22,9 @@ function invertColor(hex: string) {
     g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16),
     b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
   // pad each with zeros and return
-  return "#" + padZero(r) + padZero(g) + padZero(b);
+  return "#" + r.padStart(2, "0") + g.padStart(2, "0") + b.padStart(2, "0");
 }
 
-function padZero(str: string, len: number = 2) {
-  const zeros = new Array(len).join("0");
-  return (zeros + str).slice(-len);
-}
 export const tabMap: { [key: number]: TTabNames } = {
   0: "hours",
   1: "leak",
@@ -189,7 +185,7 @@ function getChartOptions(tab: TTabNames): ApexOptions {
     return {
       ...base,
       chart: {
-        ...(base.chart || {}),
+        ...base.chart,
         stacked: true,
       },
       // Ensure columns have no stroke and the moving average line has a visible stroke
@@ -197,7 +193,7 @@ function getChartOptions(tab: TTabNames): ApexOptions {
         width: [0, 0, 0, 0, 4],
       },
       legend: {
-        ...(base.legend || {}),
+        ...base.legend,
         show: true,
       },
       plotOptions: {
