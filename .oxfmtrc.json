@@ -1,9 +1,9 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 120,
+  "sortPackageJson": false,
   "sortTailwindcss": {
     "stylesheet": "./src/app/globals.css"
   },
-  "printWidth": 120,
-  "sortPackageJson": false,
   "ignorePatterns": ["package-lock.json"]
 }
