@@ -2,13 +2,13 @@ import React, { ComponentType } from "react";
 
 import { cx } from "class-variance-authority";
 
-import type { TTabNames } from "@/lib/data-types";
-
 import EventsIcon from "./icons/icon-events";
 import HoursIcon from "./icons/icon-hours";
 import LeakIcon from "./icons/icon-leak";
 import MaskIcon from "./icons/icon-mask";
 import ScoreIcon from "./icons/icon-score";
+
+import type { TTabNames } from "@/lib/data-types";
 
 type FillClassMap = {
   [key in TTabNames]: string;

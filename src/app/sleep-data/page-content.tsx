@@ -8,11 +8,12 @@ const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 import { AutoSizer } from "react-virtualized-auto-sizer";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { TAllData, TSelectedPreset, TTabNames } from "@/lib/data-types";
 
 import { chartOptions, series } from "./chart-constants";
 import { movingAverage } from "./chart-utils";
 import MyTabTriggerTitle from "./my-tab-trigger-title";
+
+import type { TAllData, TSelectedPreset, TTabNames } from "@/lib/data-types";
 
 const INITIAL_STARTDATE_DAYS_AGO = 90; // 30, 60, 90, 180, 365
 const INITIAL_SELECTED_PRESET = ("last" + INITIAL_STARTDATE_DAYS_AGO) as TSelectedPreset;
