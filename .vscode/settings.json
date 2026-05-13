@@ -8,7 +8,7 @@
   },
   "github.copilot.chat.commitMessageGeneration.instructions": [
     {
-      "file": ".copilot-commit-message-instructions.md"
+      "file": "./copilot-commit-message-instructions.md"
     }
   ],
   "js/ts.tsdk.promptToUseWorkspaceVersion": true,

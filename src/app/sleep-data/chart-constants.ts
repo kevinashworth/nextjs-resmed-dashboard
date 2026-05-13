@@ -1,9 +1,10 @@
 "use client";
 
 import { chartColors } from "@/lib/colors";
-import type { TChartDataPoint, TTabNames } from "@/lib/data-types";
 
 import type { ApexOptions } from "apexcharts";
+
+import type { TChartDataPoint, TTabNames } from "@/lib/data-types";
 
 // https://stackoverflow.com/a/35970186/7082724
 function invertColor(hex: string) {

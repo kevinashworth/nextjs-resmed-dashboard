@@ -1,6 +1,31 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
   "printWidth": 120,
+  "sortImports": {
+    "customGroups": [
+      {
+        "groupName": "react-libs",
+        "elementNamePattern": ["react", "react-dom"]
+      }
+    ],
+    "groups": [
+      "react-libs",
+      ["value-builtin", "value-external"],
+      "value-internal",
+      "value-parent",
+      { "newlinesBetween": true },
+      ["value-sibling", "value-index"],
+      "type-import",
+      "type-internal",
+      ["type-parent", "type-sibling", "type-index"],
+      "unknown"
+    ],
+    "ignoreCase": true,
+    "internalPattern": ["@/"],
+    "newlinesBetween": true,
+    "order": "asc",
+    "sortSideEffects": false
+  },
   "sortPackageJson": false,
   "sortTailwindcss": {
     "stylesheet": "./src/app/globals.css"

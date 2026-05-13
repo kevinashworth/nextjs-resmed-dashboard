@@ -1,9 +1,9 @@
+import { glob } from "fast-glob";
 import { promises as fs } from "fs";
 import path from "path";
 
-import { glob } from "fast-glob";
-
 import { DataFileSchema } from "@/lib/data-types";
+
 import type { TAllData, TChartData, TDataFile, TSleepRecord } from "@/lib/data-types";
 
 const getData = async () => {
