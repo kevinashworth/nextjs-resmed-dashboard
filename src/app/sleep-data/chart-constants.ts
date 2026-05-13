@@ -2,7 +2,7 @@
 
 import { chartColors } from "@/lib/colors";
 
-import type { ApexOptions } from "apexcharts";
+import type { ApexFormatterOpts, ApexOptions } from "apexcharts";
 
 import type { TChartDataPoint, TTabNames } from "@/lib/data-types";
 
@@ -105,6 +105,54 @@ const yAxisOptions = {
   },
 };
 
+type TooltipRuntimeConfig = {
+  chart?: { id?: string; stacked?: boolean };
+  series?: Array<{ name?: string }>;
+};
+
+const chartIds: Record<TTabNames, string> = {
+  hours: "sleep-data-hours",
+  leak: "sleep-data-leak",
+  events: "sleep-data-events",
+  mask: "sleep-data-mask",
+  score: "sleep-data-score",
+  scoreBreakdown: "sleep-data-score-breakdown",
+};
+
+function getTooltipSeriesContext(opts: ApexFormatterOpts) {
+  // ApexCharts runtime exposes `opts.w.config`, but the published typings omit it.
+  const config = (opts.w as { config?: TooltipRuntimeConfig }).config;
+  const seriesName = config?.series?.[opts.seriesIndex]?.name ?? "";
+  const isScoreBreakdownChart = config?.chart?.id === chartIds.scoreBreakdown;
+  const isUsageHoursChart = config?.chart?.id === chartIds.hours;
+
+  return { seriesName, isScoreBreakdownChart, isUsageHoursChart };
+}
+
+function formatTooltipYValue(value: number, opts?: ApexFormatterOpts): string {
+  if (!opts) return `${value}`;
+
+  const { seriesName, isScoreBreakdownChart, isUsageHoursChart } = getTooltipSeriesContext(opts);
+
+  if (isScoreBreakdownChart && seriesName === "Usage") {
+    return `${value}`;
+  }
+
+  if (isUsageHoursChart) {
+    return (value / 60).toFixed(2);
+  }
+
+  if (seriesName === "Events" && !isScoreBreakdownChart) {
+    return value.toFixed(2);
+  }
+
+  if (seriesName.includes("Moving Average")) {
+    return value.toFixed(2);
+  }
+
+  return `${value}`;
+}
+
 export const options: ApexOptions = {
   chart: {
     animations: {
@@ -133,6 +181,9 @@ export const options: ApexOptions = {
     enabled: true,
     x: {
       format: "dd MMM yyyy",
+    },
+    y: {
+      formatter: formatTooltipYValue,
     },
   },
   fill: {
@@ -187,6 +238,7 @@ function getChartOptions(tab: TTabNames): ApexOptions {
       ...base,
       chart: {
         ...base.chart,
+        id: chartIds.scoreBreakdown,
         stacked: true,
       },
       // Ensure columns have no stroke and the moving average line has a visible stroke
@@ -206,7 +258,13 @@ function getChartOptions(tab: TTabNames): ApexOptions {
     };
   }
 
-  return base;
+  return {
+    ...base,
+    chart: {
+      ...base.chart,
+      id: chartIds[tab],
+    },
+  };
 }
 
 export const chartOptions: Record<TTabNames, ApexOptions> = {
@@ -291,7 +349,7 @@ export const series: Record<TTabNames, { name?: string; type: string; data: TCha
   ],
   scoreBreakdown: [
     {
-      name: "Usage Hours",
+      name: "Usage",
       type: "column",
       data: [],
       color: chartColors.hours,
