@@ -28,7 +28,8 @@
   },
   "sortPackageJson": false,
   "sortTailwindcss": {
-    "stylesheet": "./src/app/globals.css"
+    "stylesheet": "./src/app/globals.css",
+    "functions": ["clsx", "cn"]
   },
   "ignorePatterns": ["package-lock.json"]
 }

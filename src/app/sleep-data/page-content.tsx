@@ -1,17 +1,20 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { ChangeEvent } from "react";
 
 import dynamic from "next/dynamic";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 import { AutoSizer } from "react-virtualized-auto-sizer";
 
+import SegmentedToggle from "@/components/SegmentedToggle";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { chartOptions, series } from "./chart-constants";
+import { ANIMATION_THRESHOLD, chartOptions, series } from "./chart-constants";
 import { movingAverage } from "./chart-utils";
 import MyTabTriggerTitle from "./my-tab-trigger-title";
+
+import type { ApexOptions } from "apexcharts";
 
 import type { TAllData, TSelectedPreset, TTabNames } from "@/lib/data-types";
 
@@ -27,8 +30,45 @@ function PageContent({ data }: { data: TAllData }) {
     return xDaysAgo.toISOString().split("T")[0];
   });
   const [endDate, setEndDate] = useState(data.newestDate);
+  const [useColumnsOverride, setUseColumnsOverride] = useState(false);
+  const [pendingTab, setPendingTab] = useState<TTabNames | null>(null);
+  const [currentTab, setCurrentTab] = useState<TTabNames>(INITIAL_TAB);
+  const toggleGen = useRef(0);
+  const prevDisableAnimations = useRef(false);
   const startTs = new Date(startDate).getTime();
   const endTs = new Date(endDate).getTime();
+
+  const dayCount = useMemo(() => {
+    return Math.round((endTs - startTs) / (24 * 60 * 60 * 1000));
+  }, [startTs, endTs]);
+
+  const disableAnimations = dayCount >= ANIMATION_THRESHOLD;
+  const chartKey = disableAnimations ? "wide" : "narrow";
+
+  useEffect(() => {
+    if (prevDisableAnimations.current !== disableAnimations) {
+      prevDisableAnimations.current = disableAnimations;
+      if (disableAnimations) setUseColumnsOverride(false);
+    }
+  }, [disableAnimations]);
+
+  // Toggle between area and column chart for the current tab.
+  // Increment a generation counter to cancel stale toggles — if the user
+  // quickly switches tabs after clicking, the double-RAF fires after the new
+  // tab's render, and the gen check prevents toggling the wrong tab.
+  // The double-RAF lets React paint "Rendering…" before the expensive
+  // ApexCharts remount (single RAF is insufficient in practice).
+  function toggleColumn() {
+    const gen = ++toggleGen.current;
+    setPendingTab(currentTab);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (gen !== toggleGen.current) return;
+        setUseColumnsOverride((prev) => !prev);
+        setPendingTab(null);
+      });
+    });
+  }
 
   const filteredData = useMemo(() => {
     const timestampFilter = (record: { timestamp: number }): boolean => {
@@ -51,85 +91,97 @@ function PageContent({ data }: { data: TAllData }) {
     };
   }, [data, startTs, endTs]);
 
-  // Using x/y series with numeric timestamps for ApexCharts (x = timestamp, y = value)
-  // No need for x-axis categories when series points include x timestamps.
-  const chartSeries = useMemo(
-    () => ({
+  const dynamicChartOptions: Record<TTabNames, ApexOptions> = useMemo(() => {
+    if (!disableAnimations) return chartOptions;
+
+    const areaStrokeMain: ApexOptions["stroke"] = { width: [2, 4] };
+    const areaStrokeBreakdown: ApexOptions["stroke"] = { width: [2, 2, 2, 2, 4] };
+    const colStrokeMain: ApexOptions["stroke"] = { width: [0, 4] };
+    const colStrokeBreakdown: ApexOptions["stroke"] = { width: [0, 0, 0, 0, 4] };
+    const areaFill: ApexOptions["fill"] = { type: "solid" };
+    const colFill: ApexOptions["fill"] = { type: "solid" };
+
+    const getOpts = (key: TTabNames): ApexOptions => {
+      const opts = chartOptions[key];
+      const useArea = !(useColumnsOverride && key === currentTab);
+
+      if (key === "scoreBreakdown") {
+        if (useArea) {
+          const { plotOptions: _, ...noPlot } = opts;
+          return {
+            ...noPlot,
+            chart: { ...noPlot.chart, animations: { enabled: false }, stackOnlyBar: false },
+            stroke: areaStrokeBreakdown,
+            fill: { type: "solid" },
+          };
+        }
+        return {
+          ...opts,
+          chart: { ...opts.chart, animations: { enabled: false } },
+          stroke: colStrokeBreakdown,
+          fill: colFill,
+        };
+      }
+
+      return {
+        ...opts,
+        chart: { ...opts.chart, animations: { enabled: false } },
+        stroke: useArea ? areaStrokeMain : colStrokeMain,
+        fill: useArea ? areaFill : colFill,
+      };
+    };
+
+    return {
+      hours: getOpts("hours"),
+      leak: getOpts("leak"),
+      events: getOpts("events"),
+      mask: getOpts("mask"),
+      score: getOpts("score"),
+      scoreBreakdown: getOpts("scoreBreakdown"),
+    };
+  }, [disableAnimations, useColumnsOverride, currentTab]);
+
+  const chartSeries = useMemo(() => {
+    const useWide = dayCount >= ANIMATION_THRESHOLD;
+
+    const typeFor = (tab: TTabNames) => {
+      if (!useWide) return "column";
+      if (useColumnsOverride && tab === currentTab) return "column";
+      return "area";
+    };
+
+    const xy = (data: { timestamp: number; value: number }[]) => data.map((p) => ({ x: p.timestamp, y: p.value }));
+
+    return {
       hours: [
-        {
-          ...series.hours[0],
-          data: filteredData.hours.map((d) => ({ x: d.timestamp, y: d.value })),
-        },
-        {
-          ...series.hours[1],
-          data: movingAverage(filteredData.hours, 7).map((d) => ({ x: d.timestamp, y: d.value })),
-        },
+        { ...series.hours[0], type: typeFor("hours"), data: xy(filteredData.hours) },
+        { ...series.hours[1], data: xy(movingAverage(filteredData.hours, 7)) },
       ],
       leak: [
-        {
-          ...series.leak[0],
-          data: filteredData.leak.map((d) => ({ x: d.timestamp, y: d.value })),
-        },
-        {
-          ...series.leak[1],
-          data: movingAverage(filteredData.leak, 7).map((d) => ({ x: d.timestamp, y: d.value })),
-        },
+        { ...series.leak[0], type: typeFor("leak"), data: xy(filteredData.leak) },
+        { ...series.leak[1], data: xy(movingAverage(filteredData.leak, 7)) },
       ],
       events: [
-        {
-          ...series.events[0],
-          data: filteredData.events.map((d) => ({ x: d.timestamp, y: d.value })),
-        },
-        {
-          ...series.events[1],
-          data: movingAverage(filteredData.events, 7).map((d) => ({ x: d.timestamp, y: d.value })),
-        },
+        { ...series.events[0], type: typeFor("events"), data: xy(filteredData.events) },
+        { ...series.events[1], data: xy(movingAverage(filteredData.events, 7)) },
       ],
       mask: [
-        {
-          ...series.mask[0],
-          data: filteredData.mask.map((d) => ({ x: d.timestamp, y: d.value })),
-        },
-        {
-          ...series.mask[1],
-          data: movingAverage(filteredData.mask, 7).map((d) => ({ x: d.timestamp, y: d.value })),
-        },
+        { ...series.mask[0], type: typeFor("mask"), data: xy(filteredData.mask) },
+        { ...series.mask[1], data: xy(movingAverage(filteredData.mask, 7)) },
       ],
       score: [
-        {
-          ...series.score[0],
-          data: filteredData.score.map((d) => ({ x: d.timestamp, y: d.value })),
-        },
-        {
-          ...series.score[1],
-          data: movingAverage(filteredData.score, 7).map((d) => ({ x: d.timestamp, y: d.value })),
-        },
+        { ...series.score[0], type: typeFor("score"), data: xy(filteredData.score) },
+        { ...series.score[1], data: xy(movingAverage(filteredData.score, 7)) },
       ],
       scoreBreakdown: [
-        {
-          ...series.scoreBreakdown[0],
-          data: filteredData.scoreBreakdown.usage.map((d) => ({ x: d.timestamp, y: d.value })),
-        },
-        {
-          ...series.scoreBreakdown[1],
-          data: filteredData.scoreBreakdown.ahi.map((d) => ({ x: d.timestamp, y: d.value })),
-        },
-        {
-          ...series.scoreBreakdown[2],
-          data: filteredData.scoreBreakdown.mask.map((d) => ({ x: d.timestamp, y: d.value })),
-        },
-        {
-          ...series.scoreBreakdown[3],
-          data: filteredData.scoreBreakdown.leak.map((d) => ({ x: d.timestamp, y: d.value })),
-        },
-        {
-          ...series.scoreBreakdown[4],
-          data: movingAverage(filteredData.score, 7).map((d) => ({ x: d.timestamp, y: d.value })),
-        },
+        { ...series.scoreBreakdown[0], type: typeFor("scoreBreakdown"), data: xy(filteredData.scoreBreakdown.usage) },
+        { ...series.scoreBreakdown[1], type: typeFor("scoreBreakdown"), data: xy(filteredData.scoreBreakdown.ahi) },
+        { ...series.scoreBreakdown[2], type: typeFor("scoreBreakdown"), data: xy(filteredData.scoreBreakdown.mask) },
+        { ...series.scoreBreakdown[3], type: typeFor("scoreBreakdown"), data: xy(filteredData.scoreBreakdown.leak) },
+        { ...series.scoreBreakdown[4], data: xy(movingAverage(filteredData.score, 7)) },
       ],
-    }),
-    [filteredData],
-  );
+    };
+  }, [filteredData, dayCount, useColumnsOverride, currentTab]);
 
   function handlePresetChange(event: ChangeEvent<HTMLSelectElement>) {
     const nextPreset = event.target.value as TSelectedPreset;
@@ -277,6 +329,20 @@ function PageContent({ data }: { data: TAllData }) {
               max={data.newestDate}
             />
           </div>
+          {disableAnimations && (
+            <div className="flex items-center gap-3">
+              <label className="text-sm font-semibold whitespace-nowrap text-accent-500">Chart Type</label>
+              <SegmentedToggle
+                options={[
+                  { label: "Area", value: "area" },
+                  { label: "Columns", value: "columns" },
+                ]}
+                value={useColumnsOverride ? "columns" : "area"}
+                onChange={() => toggleColumn()}
+                disabled={pendingTab === currentTab}
+              />
+            </div>
+          )}
         </div>
       </div>
 
@@ -284,7 +350,15 @@ function PageContent({ data }: { data: TAllData }) {
         <AutoSizer
           renderProp={({ height, width }) => (
             <div>
-              <Tabs defaultValue={INITIAL_TAB}>
+              <Tabs
+                value={currentTab}
+                onValueChange={(v) => {
+                  setCurrentTab(v as TTabNames);
+                  setUseColumnsOverride(false);
+                  setPendingTab(null);
+                  toggleGen.current++;
+                }}
+              >
                 <div className="pl-10">
                   <TabsList>
                     <TabsTrigger
@@ -327,28 +401,71 @@ function PageContent({ data }: { data: TAllData }) {
                 </div>
                 {!height || !width ? null : (
                   <>
-                    <TabsContent value="hours">
-                      <Chart options={chartOptions.hours} series={chartSeries.hours} height={height} width={width} />
+                    <TabsContent value="hours" className="relative">
+                      {currentTab === "hours" && (
+                        <Chart
+                          key={`hours-${chartKey}-${useColumnsOverride}`}
+                          options={dynamicChartOptions.hours}
+                          series={chartSeries.hours}
+                          height={height}
+                          width={width}
+                        />
+                      )}
                     </TabsContent>
-                    <TabsContent value="leak">
-                      <Chart options={chartOptions.leak} series={chartSeries.leak} height={height} width={width} />
+                    <TabsContent value="leak" className="relative">
+                      {currentTab === "leak" && (
+                        <Chart
+                          key={`leak-${chartKey}-${useColumnsOverride}`}
+                          options={dynamicChartOptions.leak}
+                          series={chartSeries.leak}
+                          height={height}
+                          width={width}
+                        />
+                      )}
                     </TabsContent>
-                    <TabsContent value="events">
-                      <Chart options={chartOptions.events} series={chartSeries.events} height={height} width={width} />
+                    <TabsContent value="events" className="relative">
+                      {currentTab === "events" && (
+                        <Chart
+                          key={`events-${chartKey}-${useColumnsOverride}`}
+                          options={dynamicChartOptions.events}
+                          series={chartSeries.events}
+                          height={height}
+                          width={width}
+                        />
+                      )}
                     </TabsContent>
-                    <TabsContent value="mask">
-                      <Chart options={chartOptions.mask} series={chartSeries.mask} height={height} width={width} />
+                    <TabsContent value="mask" className="relative">
+                      {currentTab === "mask" && (
+                        <Chart
+                          key={`mask-${chartKey}-${useColumnsOverride}`}
+                          options={dynamicChartOptions.mask}
+                          series={chartSeries.mask}
+                          height={height}
+                          width={width}
+                        />
+                      )}
                     </TabsContent>
-                    <TabsContent value="score">
-                      <Chart options={chartOptions.score} series={chartSeries.score} height={height} width={width} />
+                    <TabsContent value="score" className="relative">
+                      {currentTab === "score" && (
+                        <Chart
+                          key={`score-${chartKey}-${useColumnsOverride}`}
+                          options={dynamicChartOptions.score}
+                          series={chartSeries.score}
+                          height={height}
+                          width={width}
+                        />
+                      )}
                     </TabsContent>
-                    <TabsContent value="scoreBreakdown">
-                      <Chart
-                        options={chartOptions.scoreBreakdown}
-                        series={chartSeries.scoreBreakdown}
-                        height={height}
-                        width={width}
-                      />
+                    <TabsContent value="scoreBreakdown" className="relative">
+                      {currentTab === "scoreBreakdown" && (
+                        <Chart
+                          key={`scoreBreakdown-${chartKey}-${useColumnsOverride}`}
+                          options={dynamicChartOptions.scoreBreakdown}
+                          series={chartSeries.scoreBreakdown}
+                          height={height}
+                          width={width}
+                        />
+                      )}
                     </TabsContent>
                   </>
                 )}
