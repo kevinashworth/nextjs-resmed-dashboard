@@ -215,7 +215,6 @@ export const options: ApexOptions = {
     },
     labels: {
       show: true,
-      hideOverlappingLabels: false,
       datetimeFormatter: {
         year: "yyyy",
         month: "MMM yyyy",
