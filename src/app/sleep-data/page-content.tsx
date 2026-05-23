@@ -363,37 +363,37 @@ function PageContent({ data }: { data: TAllData }) {
                   <TabsList>
                     <TabsTrigger
                       value="hours"
-                      className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-hours/80 data-[state=active]:p-4"
+                      className="rounded-none transition-transform duration-100 hover:rounded-t-2xl hover:border-gray-300 hover:bg-gray-50/50 active:scale-90 active:bg-gray-100/50 data-[state=active]:border-b-2 data-[state=active]:border-hours/80 data-[state=active]:p-4"
                     >
                       <MyTabTriggerTitle name="hours" title="Usage Hours" />
                     </TabsTrigger>
                     <TabsTrigger
                       value="leak"
-                      className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-leak/80 data-[state=active]:p-4"
+                      className="rounded-none transition-transform duration-100 hover:rounded-t-2xl hover:border-gray-300 hover:bg-gray-50/50 active:scale-90 active:bg-gray-100/50 data-[state=active]:border-b-2 data-[state=active]:border-leak/80 data-[state=active]:p-4"
                     >
                       <MyTabTriggerTitle name="leak" title="Mask Seal" />
                     </TabsTrigger>
                     <TabsTrigger
                       value="events"
-                      className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-events/80 data-[state=active]:p-4"
+                      className="rounded-none transition-transform duration-100 hover:rounded-t-2xl hover:border-gray-300 hover:bg-gray-50/50 active:scale-90 active:bg-gray-100/50 data-[state=active]:border-b-2 data-[state=active]:border-events/80 data-[state=active]:p-4"
                     >
                       <MyTabTriggerTitle name="events" title="Events" />
                     </TabsTrigger>
                     <TabsTrigger
                       value="mask"
-                      className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-mask/80 data-[state=active]:p-4"
+                      className="rounded-none transition-transform duration-100 hover:rounded-t-2xl hover:border-gray-300 hover:bg-gray-50/50 active:scale-90 active:bg-gray-100/50 data-[state=active]:border-b-2 data-[state=active]:border-mask/80 data-[state=active]:p-4"
                     >
                       <MyTabTriggerTitle name="mask" title="Mask On/Off" />
                     </TabsTrigger>
                     <TabsTrigger
                       value="score"
-                      className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-score/80 data-[state=active]:p-4"
+                      className="rounded-none transition-transform duration-100 hover:rounded-t-2xl hover:border-gray-300 hover:bg-gray-50/50 active:scale-90 active:bg-gray-100/50 data-[state=active]:border-b-2 data-[state=active]:border-score/80 data-[state=active]:p-4"
                     >
                       <MyTabTriggerTitle name="score" title="myAir Score" />
                     </TabsTrigger>
                     <TabsTrigger
                       value="scoreBreakdown"
-                      className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-score/80 data-[state=active]:p-4"
+                      className="rounded-none transition-transform duration-100 hover:rounded-t-2xl hover:border-gray-300 hover:bg-gray-50/50 active:scale-90 active:bg-gray-100/50 data-[state=active]:border-b-2 data-[state=active]:border-score/80 data-[state=active]:p-4"
                     >
                       <MyTabTriggerTitle name="scoreBreakdown" title="(Breakdown)" />
                     </TabsTrigger>
