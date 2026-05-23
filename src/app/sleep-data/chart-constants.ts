@@ -6,6 +6,8 @@ import type { ApexFormatterOpts, ApexOptions } from "apexcharts";
 
 import type { TChartDataPoint, TTabNames } from "@/lib/data-types";
 
+export const ANIMATION_THRESHOLD = 180; // Switch to area charts above this point to avoid Apex animation performance issues
+
 // https://stackoverflow.com/a/35970186/7082724
 function invertColor(hex: string) {
   if (hex.indexOf("#") === 0) {
@@ -215,7 +217,6 @@ export const options: ApexOptions = {
     },
     labels: {
       show: true,
-      hideOverlappingLabels: false,
       datetimeFormatter: {
         year: "yyyy",
         month: "MMM yyyy",
