@@ -24,21 +24,19 @@ const getData = async () => {
 
   // Combine all months' data into a single array of sleep records.
   // For timestamp, we convert startDate to timestamp once here for efficiency.
-  const combinedData: TSleepRecord[] = allMonthsData
-    .flatMap((monthData) => monthData.data.getPatientWrapper.sleepRecords.items)
-    .map((item) => ({
-      startDate: item.startDate,
-      timestamp: new Date(item.startDate).getTime(),
-      events: item.ahi,
-      leak: item.leakPercentile,
-      mask: item.maskPairCount,
-      score: item.sleepScore,
-      hours: item.totalUsage,
-      usageScore: item.usageScore,
-      ahiScore: item.ahiScore,
-      maskScore: item.maskScore,
-      leakScore: item.leakScore,
-    }));
+  const combinedData: TSleepRecord[] = allMonthsData.flat().map((item) => ({
+    startDate: item.startDate,
+    timestamp: new Date(item.startDate).getTime(),
+    events: item.ahi,
+    leak: item.leakPercentile,
+    mask: item.maskPairCount,
+    score: item.sleepScore,
+    hours: item.totalUsage,
+    usageScore: item.usageScore,
+    ahiScore: item.ahiScore,
+    maskScore: item.maskScore,
+    leakScore: item.leakScore,
+  }));
 
   const oldestDate = combinedData[0].startDate;
   const newestDate = combinedData[combinedData.length - 1].startDate;
