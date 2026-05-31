@@ -14,15 +14,7 @@ const SleepRecordInputSchema = z.object({
   leakScore: z.number(),
 });
 
-export const DataFileSchema = z.object({
-  data: z.object({
-    getPatientWrapper: z.object({
-      sleepRecords: z.object({
-        items: z.array(SleepRecordInputSchema),
-      }),
-    }),
-  }),
-});
+export const DataFileSchema = z.array(SleepRecordInputSchema);
 export type TDataFile = z.infer<typeof DataFileSchema>;
 
 export type TSleepRecord = {
