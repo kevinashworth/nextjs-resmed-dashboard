@@ -28,15 +28,7 @@ function invertColor(hex: string) {
   return "#" + r.padStart(2, "0") + g.padStart(2, "0") + b.padStart(2, "0");
 }
 
-export const tabMap: { [key: number]: TTabNames } = {
-  0: "hours",
-  1: "leak",
-  2: "events",
-  3: "mask",
-  4: "score",
-};
-
-const yAxisOptionsBase = {
+const yAxisOptionsBase: ApexOptions["yaxis"] = {
   axisTicks: { show: true },
   axisBorder: { show: true },
   labels: {
@@ -46,38 +38,44 @@ const yAxisOptionsBase = {
   },
 };
 
-const yAxisOptionsHours = {
-  max: 600,
-  min: 0,
+const yAxisOptionsHours: ApexOptions["yaxis"] = {
   labels: {
     formatter: function (d: number) {
-      return `${Math.floor(d / 60)}`;
+      return `${Math.floor(d / 30) / 2}`;
     },
   },
+  max: (d: number) => (d < 600 ? 600 : Math.floor(d / 60) * 60),
+  stepSize: 60,
   title: {
     text: "Hours",
   },
 };
 
-const yAxisOptionsLeak = {
+const yAxisOptionsLeak: ApexOptions["yaxis"] = {
   title: {
     text: "Leak (L/min)",
   },
 };
 
-const yAxisOptionsEvents = {
+const yAxisOptionsEvents: ApexOptions["yaxis"] = {
+  labels: {
+    formatter: function formatter(d: number) {
+      return `${d}`;
+    },
+  },
+  max: (d: number) => (d < 3 ? 3 : Math.floor(d)),
   title: {
     text: "Events",
   },
 };
 
-const yAxisOptionsMask = {
+const yAxisOptionsMask: ApexOptions["yaxis"] = {
   title: {
     text: "On/Off",
   },
 };
 
-const yAxisOptionsScore = {
+const yAxisOptionsScore: ApexOptions["yaxis"] = {
   max: 100,
   title: {
     text: "Score",
@@ -102,6 +100,10 @@ const yAxisOptions = {
     ...yAxisOptionsMask,
   },
   score: {
+    ...yAxisOptionsBase,
+    ...yAxisOptionsScore,
+  },
+  scoreBreakdown: {
     ...yAxisOptionsBase,
     ...yAxisOptionsScore,
   },
@@ -158,15 +160,7 @@ function formatTooltipYValue(value: number, opts?: ApexFormatterOpts): string {
 export const options: ApexOptions = {
   chart: {
     animations: {
-      enabled: true,
-      speed: 500,
-      animateGradually: {
-        enabled: false,
-      },
-      dynamicAnimation: {
-        enabled: true,
-        speed: 350,
-      },
+      enabled: false,
     },
     fontFamily: "Inter, sans-serif",
     dropShadow: {
@@ -228,10 +222,9 @@ export const options: ApexOptions = {
 
 function getChartOptions(tab: TTabNames): ApexOptions {
   // For the score breakdown we reuse the 'score' y-axis but enable stacked bars and legend
-  const yaxis = tab === "scoreBreakdown" ? yAxisOptions["score"] : yAxisOptions[tab];
   const base: ApexOptions = {
     ...options,
-    yaxis,
+    yaxis: yAxisOptions[tab],
   };
 
   if (tab === "scoreBreakdown") {

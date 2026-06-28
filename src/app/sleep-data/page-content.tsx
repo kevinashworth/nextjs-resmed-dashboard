@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import type { ChangeEvent } from "react";
 
 import dynamic from "next/dynamic";
@@ -31,36 +31,28 @@ function PageContent({ data }: { data: TAllData }) {
   });
   const [endDate, setEndDate] = useState(data.newestDate);
   const [useColumnsOverride, setUseColumnsOverride] = useState(() => INITIAL_STARTDATE_DAYS_AGO < LONG_RANGE_THRESHOLD);
-  const [pendingTab, setPendingTab] = useState<TTabNames | null>(null);
   const [currentTab, setCurrentTab] = useState<TTabNames>(INITIAL_TAB);
-  const toggleGen = useRef(0);
   const startTs = new Date(startDate).getTime();
   const endTs = new Date(endDate).getTime();
 
   const dayCount = Math.round((endTs - startTs) / (24 * 60 * 60 * 1000));
   const isLongRange = dayCount >= LONG_RANGE_THRESHOLD;
 
-  // Toggle between area and column chart for the current tab.
-  // Increment a generation counter to cancel stale toggles — if the user
-  // quickly switches tabs after clicking, the double-RAF fires after the new
-  // tab's render, and the gen check prevents toggling the wrong tab.
-  // The double-RAF lets React paint "Rendering…" before the expensive
-  // ApexCharts remount (single RAF is insufficient in practice).
   function toggleColumn() {
-    const gen = ++toggleGen.current;
-    setPendingTab(currentTab);
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        if (gen !== toggleGen.current) return;
-        setUseColumnsOverride((prev) => !prev);
-        setPendingTab(null);
-      });
-    });
+    setUseColumnsOverride((prev) => !prev);
   }
 
   function resetColumnsForRange(start: Date, end: Date) {
     const rangeDays = Math.round((end.getTime() - start.getTime()) / (24 * 60 * 60 * 1000));
     setUseColumnsOverride(rangeDays < LONG_RANGE_THRESHOLD);
+  }
+
+  function renderTabChart(tab: TTabNames, height: number, width: number) {
+    if (currentTab !== tab) return null;
+
+    return (
+      <Chart key={tab} options={dynamicChartOptions[tab]} series={chartSeries[tab]} height={height} width={width} />
+    );
   }
 
   const filteredData = useMemo(() => {
@@ -85,41 +77,15 @@ function PageContent({ data }: { data: TAllData }) {
   }, [data, startTs, endTs]);
 
   const dynamicChartOptions: Record<TTabNames, ApexOptions> = useMemo(() => {
-    const areaStrokeMain: ApexOptions["stroke"] = { width: [2, 4] };
-    const areaStrokeBreakdown: ApexOptions["stroke"] = { width: [2, 2, 2, 2, 4] };
-    const colStrokeMain: ApexOptions["stroke"] = { width: [0, 4] };
-    const colStrokeBreakdown: ApexOptions["stroke"] = { width: [0, 0, 0, 0, 4] };
-    const areaFill: ApexOptions["fill"] = { type: "solid" };
-    const colFill: ApexOptions["fill"] = { type: "solid" };
-
     const getOpts = (key: TTabNames): ApexOptions => {
       const opts = chartOptions[key];
-      const useArea = !(useColumnsOverride && key === currentTab);
-
       if (key === "scoreBreakdown") {
-        if (useArea) {
-          const { plotOptions: _, ...noPlot } = opts;
-          return {
-            ...noPlot,
-            chart: { ...noPlot.chart!, animations: isLongRange ? { enabled: false } : { ...noPlot.chart!.animations, speed: 350 }, stackOnlyBar: false },
-            stroke: areaStrokeBreakdown,
-            fill: { type: "solid" },
-          };
-        }
         return {
           ...opts,
-          chart: { ...opts.chart, ...(isLongRange ? { animations: { enabled: false } } : {}) },
-          stroke: colStrokeBreakdown,
-          fill: colFill,
+          chart: { ...opts.chart, stackOnlyBar: false },
         };
       }
-
-      return {
-        ...opts,
-        chart: { ...opts.chart, ...(isLongRange ? { animations: { enabled: false } } : useArea ? { animations: { ...opts.chart!.animations, speed: 350 } } : {}) },
-        stroke: useArea ? areaStrokeMain : colStrokeMain,
-        fill: useArea ? areaFill : colFill,
-      };
+      return opts;
     };
 
     return {
@@ -130,7 +96,7 @@ function PageContent({ data }: { data: TAllData }) {
       score: getOpts("score"),
       scoreBreakdown: getOpts("scoreBreakdown"),
     };
-  }, [isLongRange, useColumnsOverride, currentTab]);
+  }, []);
 
   const chartSeries = useMemo(() => {
     const typeFor = (tab: TTabNames) => {
@@ -277,6 +243,7 @@ function PageContent({ data }: { data: TAllData }) {
             </label>
             <select
               id="preset-range"
+              autoComplete="off"
               className="rounded border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
               value={selectedPreset}
               onChange={handlePresetChange}
@@ -301,6 +268,7 @@ function PageContent({ data }: { data: TAllData }) {
             <input
               type="date"
               id="start-date"
+              autoComplete="off"
               className="rounded border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
               value={startDate}
               onChange={handleStartDateChange}
@@ -315,6 +283,7 @@ function PageContent({ data }: { data: TAllData }) {
             <input
               type="date"
               id="end-date"
+              autoComplete="off"
               className="rounded border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
               value={endDate}
               onChange={handleEndDateChange}
@@ -331,7 +300,6 @@ function PageContent({ data }: { data: TAllData }) {
               ]}
               value={useColumnsOverride ? "columns" : "area"}
               onChange={() => toggleColumn()}
-              disabled={pendingTab === currentTab}
             />
           </div>
         </div>
@@ -346,8 +314,6 @@ function PageContent({ data }: { data: TAllData }) {
                 onValueChange={(v) => {
                   setCurrentTab(v as TTabNames);
                   if (isLongRange) setUseColumnsOverride(!isLongRange);
-                  setPendingTab(null);
-                  toggleGen.current++;
                 }}
               >
                 <div className="pl-10">
@@ -393,70 +359,22 @@ function PageContent({ data }: { data: TAllData }) {
                 {!height || !width ? null : (
                   <>
                     <TabsContent value="hours" className="relative">
-                      {currentTab === "hours" && (
-                        <Chart
-                          key={`hours-${useColumnsOverride}`}
-                          options={dynamicChartOptions.hours}
-                          series={chartSeries.hours}
-                          height={height}
-                          width={width}
-                        />
-                      )}
+                      {renderTabChart("hours", height, width)}
                     </TabsContent>
                     <TabsContent value="leak" className="relative">
-                      {currentTab === "leak" && (
-                        <Chart
-                          key={`leak-${useColumnsOverride}`}
-                          options={dynamicChartOptions.leak}
-                          series={chartSeries.leak}
-                          height={height}
-                          width={width}
-                        />
-                      )}
+                      {renderTabChart("leak", height, width)}
                     </TabsContent>
                     <TabsContent value="events" className="relative">
-                      {currentTab === "events" && (
-                        <Chart
-                          key={`events-${useColumnsOverride}`}
-                          options={dynamicChartOptions.events}
-                          series={chartSeries.events}
-                          height={height}
-                          width={width}
-                        />
-                      )}
+                      {renderTabChart("events", height, width)}
                     </TabsContent>
                     <TabsContent value="mask" className="relative">
-                      {currentTab === "mask" && (
-                        <Chart
-                          key={`mask-${useColumnsOverride}`}
-                          options={dynamicChartOptions.mask}
-                          series={chartSeries.mask}
-                          height={height}
-                          width={width}
-                        />
-                      )}
+                      {renderTabChart("mask", height, width)}
                     </TabsContent>
                     <TabsContent value="score" className="relative">
-                      {currentTab === "score" && (
-                        <Chart
-                          key={`score-${useColumnsOverride}`}
-                          options={dynamicChartOptions.score}
-                          series={chartSeries.score}
-                          height={height}
-                          width={width}
-                        />
-                      )}
+                      {renderTabChart("score", height, width)}
                     </TabsContent>
                     <TabsContent value="scoreBreakdown" className="relative">
-                      {currentTab === "scoreBreakdown" && (
-                        <Chart
-                          key={`scoreBreakdown-${useColumnsOverride}`}
-                          options={dynamicChartOptions.scoreBreakdown}
-                          series={chartSeries.scoreBreakdown}
-                          height={height}
-                          width={width}
-                        />
-                      )}
+                      {renderTabChart("scoreBreakdown", height, width)}
                     </TabsContent>
                   </>
                 )}
