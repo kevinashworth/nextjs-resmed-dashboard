@@ -34,7 +34,7 @@ When you have new myAir data to add to the dashboard:
    ```
 
 7. The script extracts the records, splits them by month, strips unused fields, and writes to `data/monthlySleepRecords/YYYY-MM.json` (overwriting existing files for those months)
-8. Commit and push.
+8. Verify the build, then create a branch, commit, push, and open a PR.
 
 ## Available scripts
 

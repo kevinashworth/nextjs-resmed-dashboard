@@ -26,7 +26,7 @@ function SegmentedToggle({ options, value, onChange, disabled }: SegmentedToggle
           if (!isFirstActive) onChange(first.value);
         }}
         className={clsx(
-          "relative px-3 py-1.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+          "relative px-3 py-1.5 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50",
           "rounded-l-md",
           isFirstActive
             ? "z-10 border border-accent-600 bg-accent-500 text-white"
@@ -41,7 +41,7 @@ function SegmentedToggle({ options, value, onChange, disabled }: SegmentedToggle
           if (isFirstActive) onChange(second.value);
         }}
         className={clsx(
-          "relative px-3 py-1.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+          "relative px-3 py-1.5 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50",
           "-ml-px rounded-r-md",
           !isFirstActive
             ? "z-10 border border-accent-600 bg-accent-500 text-white"

@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "My Resmed Sleep Data Dashboard",
+  title: "Kevin’s Resmed Sleep Data Dashboard",
   description:
     "I built this Sleep Data Dashboard to view my `Resmed myAir` data with different timelines - Built with Next.js, React, Tailwind CSS, and TypeScript",
 };
