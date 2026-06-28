@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { ChangeEvent } from "react";
 
 import dynamic from "next/dynamic";
@@ -10,7 +10,7 @@ import { AutoSizer } from "react-virtualized-auto-sizer";
 import SegmentedToggle from "@/components/SegmentedToggle";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { ANIMATION_THRESHOLD, chartOptions, series } from "./chart-constants";
+import { LONG_RANGE_THRESHOLD, chartOptions, series } from "./chart-constants";
 import { movingAverage } from "./chart-utils";
 import MyTabTriggerTitle from "./my-tab-trigger-title";
 
@@ -30,27 +30,15 @@ function PageContent({ data }: { data: TAllData }) {
     return xDaysAgo.toISOString().split("T")[0];
   });
   const [endDate, setEndDate] = useState(data.newestDate);
-  const [useColumnsOverride, setUseColumnsOverride] = useState(false);
+  const [useColumnsOverride, setUseColumnsOverride] = useState(() => INITIAL_STARTDATE_DAYS_AGO < LONG_RANGE_THRESHOLD);
   const [pendingTab, setPendingTab] = useState<TTabNames | null>(null);
   const [currentTab, setCurrentTab] = useState<TTabNames>(INITIAL_TAB);
   const toggleGen = useRef(0);
-  const prevDisableAnimations = useRef(false);
   const startTs = new Date(startDate).getTime();
   const endTs = new Date(endDate).getTime();
 
-  const dayCount = useMemo(() => {
-    return Math.round((endTs - startTs) / (24 * 60 * 60 * 1000));
-  }, [startTs, endTs]);
-
-  const disableAnimations = dayCount >= ANIMATION_THRESHOLD;
-  const chartKey = disableAnimations ? "wide" : "narrow";
-
-  useEffect(() => {
-    if (prevDisableAnimations.current !== disableAnimations) {
-      prevDisableAnimations.current = disableAnimations;
-      if (disableAnimations) setUseColumnsOverride(false);
-    }
-  }, [disableAnimations]);
+  const dayCount = Math.round((endTs - startTs) / (24 * 60 * 60 * 1000));
+  const isLongRange = dayCount >= LONG_RANGE_THRESHOLD;
 
   // Toggle between area and column chart for the current tab.
   // Increment a generation counter to cancel stale toggles — if the user
@@ -68,6 +56,11 @@ function PageContent({ data }: { data: TAllData }) {
         setPendingTab(null);
       });
     });
+  }
+
+  function resetColumnsForRange(start: Date, end: Date) {
+    const rangeDays = Math.round((end.getTime() - start.getTime()) / (24 * 60 * 60 * 1000));
+    setUseColumnsOverride(rangeDays < LONG_RANGE_THRESHOLD);
   }
 
   const filteredData = useMemo(() => {
@@ -92,8 +85,6 @@ function PageContent({ data }: { data: TAllData }) {
   }, [data, startTs, endTs]);
 
   const dynamicChartOptions: Record<TTabNames, ApexOptions> = useMemo(() => {
-    if (!disableAnimations) return chartOptions;
-
     const areaStrokeMain: ApexOptions["stroke"] = { width: [2, 4] };
     const areaStrokeBreakdown: ApexOptions["stroke"] = { width: [2, 2, 2, 2, 4] };
     const colStrokeMain: ApexOptions["stroke"] = { width: [0, 4] };
@@ -110,14 +101,14 @@ function PageContent({ data }: { data: TAllData }) {
           const { plotOptions: _, ...noPlot } = opts;
           return {
             ...noPlot,
-            chart: { ...noPlot.chart, animations: { enabled: false }, stackOnlyBar: false },
+            chart: { ...noPlot.chart!, animations: isLongRange ? { enabled: false } : { ...noPlot.chart!.animations, speed: 350 }, stackOnlyBar: false },
             stroke: areaStrokeBreakdown,
             fill: { type: "solid" },
           };
         }
         return {
           ...opts,
-          chart: { ...opts.chart, animations: { enabled: false } },
+          chart: { ...opts.chart, ...(isLongRange ? { animations: { enabled: false } } : {}) },
           stroke: colStrokeBreakdown,
           fill: colFill,
         };
@@ -125,7 +116,7 @@ function PageContent({ data }: { data: TAllData }) {
 
       return {
         ...opts,
-        chart: { ...opts.chart, animations: { enabled: false } },
+        chart: { ...opts.chart, ...(isLongRange ? { animations: { enabled: false } } : useArea ? { animations: { ...opts.chart!.animations, speed: 350 } } : {}) },
         stroke: useArea ? areaStrokeMain : colStrokeMain,
         fill: useArea ? areaFill : colFill,
       };
@@ -139,13 +130,10 @@ function PageContent({ data }: { data: TAllData }) {
       score: getOpts("score"),
       scoreBreakdown: getOpts("scoreBreakdown"),
     };
-  }, [disableAnimations, useColumnsOverride, currentTab]);
+  }, [isLongRange, useColumnsOverride, currentTab]);
 
   const chartSeries = useMemo(() => {
-    const useWide = dayCount >= ANIMATION_THRESHOLD;
-
     const typeFor = (tab: TTabNames) => {
-      if (!useWide) return "column";
       if (useColumnsOverride && tab === currentTab) return "column";
       return "area";
     };
@@ -181,7 +169,7 @@ function PageContent({ data }: { data: TAllData }) {
         { ...series.scoreBreakdown[4], data: xy(movingAverage(filteredData.score, 7)) },
       ],
     };
-  }, [filteredData, dayCount, useColumnsOverride, currentTab]);
+  }, [filteredData, useColumnsOverride, currentTab]);
 
   function handlePresetChange(event: ChangeEvent<HTMLSelectElement>) {
     const nextPreset = event.target.value as TSelectedPreset;
@@ -254,16 +242,21 @@ function PageContent({ data }: { data: TAllData }) {
     }
     setStartDate(start.toISOString().split("T")[0]);
     setEndDate(end.toISOString().split("T")[0]);
+    resetColumnsForRange(start, end);
   }
 
   function handleStartDateChange(event: ChangeEvent<HTMLInputElement>) {
+    const newStart = new Date(event.target.value);
     setSelectedPreset("custom");
     setStartDate(event.target.value);
+    resetColumnsForRange(newStart, new Date(endDate));
   }
 
   function handleEndDateChange(event: ChangeEvent<HTMLInputElement>) {
+    const newEnd = new Date(event.target.value);
     setSelectedPreset("custom");
     setEndDate(event.target.value);
+    resetColumnsForRange(new Date(startDate), newEnd);
   }
 
   return (
@@ -329,20 +322,18 @@ function PageContent({ data }: { data: TAllData }) {
               max={data.newestDate}
             />
           </div>
-          {disableAnimations && (
-            <div className="flex items-center gap-3">
-              <label className="text-sm font-semibold whitespace-nowrap text-accent-500">Chart Type</label>
-              <SegmentedToggle
-                options={[
-                  { label: "Area", value: "area" },
-                  { label: "Columns", value: "columns" },
-                ]}
-                value={useColumnsOverride ? "columns" : "area"}
-                onChange={() => toggleColumn()}
-                disabled={pendingTab === currentTab}
-              />
-            </div>
-          )}
+          <div className="flex items-center gap-3">
+            <label className="text-sm font-semibold whitespace-nowrap text-accent-500">Chart Type</label>
+            <SegmentedToggle
+              options={[
+                { label: "Area", value: "area" },
+                { label: "Columns", value: "columns" },
+              ]}
+              value={useColumnsOverride ? "columns" : "area"}
+              onChange={() => toggleColumn()}
+              disabled={pendingTab === currentTab}
+            />
+          </div>
         </div>
       </div>
 
@@ -354,7 +345,7 @@ function PageContent({ data }: { data: TAllData }) {
                 value={currentTab}
                 onValueChange={(v) => {
                   setCurrentTab(v as TTabNames);
-                  setUseColumnsOverride(false);
+                  if (isLongRange) setUseColumnsOverride(!isLongRange);
                   setPendingTab(null);
                   toggleGen.current++;
                 }}
@@ -404,7 +395,7 @@ function PageContent({ data }: { data: TAllData }) {
                     <TabsContent value="hours" className="relative">
                       {currentTab === "hours" && (
                         <Chart
-                          key={`hours-${chartKey}-${useColumnsOverride}`}
+                          key={`hours-${useColumnsOverride}`}
                           options={dynamicChartOptions.hours}
                           series={chartSeries.hours}
                           height={height}
@@ -415,7 +406,7 @@ function PageContent({ data }: { data: TAllData }) {
                     <TabsContent value="leak" className="relative">
                       {currentTab === "leak" && (
                         <Chart
-                          key={`leak-${chartKey}-${useColumnsOverride}`}
+                          key={`leak-${useColumnsOverride}`}
                           options={dynamicChartOptions.leak}
                           series={chartSeries.leak}
                           height={height}
@@ -426,7 +417,7 @@ function PageContent({ data }: { data: TAllData }) {
                     <TabsContent value="events" className="relative">
                       {currentTab === "events" && (
                         <Chart
-                          key={`events-${chartKey}-${useColumnsOverride}`}
+                          key={`events-${useColumnsOverride}`}
                           options={dynamicChartOptions.events}
                           series={chartSeries.events}
                           height={height}
@@ -437,7 +428,7 @@ function PageContent({ data }: { data: TAllData }) {
                     <TabsContent value="mask" className="relative">
                       {currentTab === "mask" && (
                         <Chart
-                          key={`mask-${chartKey}-${useColumnsOverride}`}
+                          key={`mask-${useColumnsOverride}`}
                           options={dynamicChartOptions.mask}
                           series={chartSeries.mask}
                           height={height}
@@ -448,7 +439,7 @@ function PageContent({ data }: { data: TAllData }) {
                     <TabsContent value="score" className="relative">
                       {currentTab === "score" && (
                         <Chart
-                          key={`score-${chartKey}-${useColumnsOverride}`}
+                          key={`score-${useColumnsOverride}`}
                           options={dynamicChartOptions.score}
                           series={chartSeries.score}
                           height={height}
@@ -459,7 +450,7 @@ function PageContent({ data }: { data: TAllData }) {
                     <TabsContent value="scoreBreakdown" className="relative">
                       {currentTab === "scoreBreakdown" && (
                         <Chart
-                          key={`scoreBreakdown-${chartKey}-${useColumnsOverride}`}
+                          key={`scoreBreakdown-${useColumnsOverride}`}
                           options={dynamicChartOptions.scoreBreakdown}
                           series={chartSeries.scoreBreakdown}
                           height={height}

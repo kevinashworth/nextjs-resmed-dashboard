@@ -6,7 +6,7 @@ import type { ApexFormatterOpts, ApexOptions } from "apexcharts";
 
 import type { TChartDataPoint, TTabNames } from "@/lib/data-types";
 
-export const ANIMATION_THRESHOLD = 180; // Switch to area charts above this point to avoid Apex animation performance issues
+export const LONG_RANGE_THRESHOLD = 180; // Day count threshold for "long range" (default area charts)
 
 // https://stackoverflow.com/a/35970186/7082724
 function invertColor(hex: string) {
