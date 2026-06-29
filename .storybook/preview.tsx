@@ -1,5 +1,8 @@
 import type { Preview } from "@storybook/nextjs-vite";
 
+// @ts-expect-error
+import "../src/app/globals.css";
+
 const preview: Preview = {
   parameters: {
     controls: {

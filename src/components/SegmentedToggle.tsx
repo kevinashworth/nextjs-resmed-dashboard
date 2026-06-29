@@ -10,21 +10,21 @@ interface Option {
 interface SegmentedToggleProps {
   options: [Option, Option];
   value: string;
-  onChange: (value: string) => void;
+  onChange: React.MouseEventHandler<HTMLButtonElement>;
   disabled?: boolean;
 }
 
 function SegmentedToggle({ options, value, onChange, disabled }: SegmentedToggleProps) {
   const [first, second] = options;
   const isFirstActive = value === first.value;
+  const isSecondActive = value === second.value;
+  const isDisabled = disabled || (!isFirstActive && !isSecondActive);
 
   return (
     <div className="flex shadow-sm">
       <button
-        disabled={disabled}
-        onClick={() => {
-          if (!isFirstActive) onChange(first.value);
-        }}
+        disabled={isDisabled}
+        onClick={onChange}
         className={clsx(
           "relative px-3 py-1.5 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50",
           "rounded-l-md",
@@ -36,14 +36,12 @@ function SegmentedToggle({ options, value, onChange, disabled }: SegmentedToggle
         {first.label}
       </button>
       <button
-        disabled={disabled}
-        onClick={() => {
-          if (isFirstActive) onChange(second.value);
-        }}
+        disabled={isDisabled}
+        onClick={onChange}
         className={clsx(
           "relative px-3 py-1.5 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50",
           "-ml-px rounded-r-md",
-          !isFirstActive
+          isSecondActive
             ? "z-10 border border-accent-600 bg-accent-500 text-white"
             : "border border-gray-300 bg-white text-gray-700 hover:bg-gray-100",
         )}
