@@ -8,7 +8,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 const meta = {
   component: SegmentedToggle,
   args: { onChange: fn() },
-  tags: ["autodocs"],
+  tags: ["!autodocs"],
 } satisfies Meta<typeof SegmentedToggle>;
 
 export default meta;
