@@ -4,7 +4,7 @@ This project uses **Conventional Commits**
 
 ## Format
 
-```
+```text
 <type>(<scope>): <subject>
 
 <body> (optional)
@@ -29,6 +29,7 @@ Rules: type and subject required; scope, body and footer optional; subject lower
 | `build:`    | Build tools      |
 | `ci:`       | CI/CD            |
 | `revert:`   | Revert commit    |
+| `story:`    | Storybook        |
 
 Only use feat: for user-facing new features. Do NOT use feat: for dependency updates, config changes, or internal improvements. When in doubt, default to fix: or chore: unless there's a clear user-facing feature.
 
