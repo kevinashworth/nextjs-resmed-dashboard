@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 
-// import logger from "@/lib/logger";
+import logger from "@/lib/logger";
 
 interface Option {
   label: string;
@@ -23,9 +23,9 @@ function SegmentedToggle({ options, value, onChange, disabled }: SegmentedToggle
   const isInvalidValue = !isOptionAActive && !isOptionBActive;
   const isDisabled = disabled || isInvalidValue;
 
-  // if (isInvalidValue) {
-  //   logger.warn(`SegmentedToggle: Invalid value provided - ${value}`);
-  // }
+  if (isInvalidValue) {
+    logger.warn(`SegmentedToggle: Invalid value provided - ${value}`);
+  }
 
   const sharedButtonClass = clsx(
     "cursor-pointer border px-3 py-1.5 text-sm font-medium transition-all duration-200 select-none",
