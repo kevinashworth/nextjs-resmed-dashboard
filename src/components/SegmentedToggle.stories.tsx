@@ -43,7 +43,6 @@ export const Toggle: Story = {
     const [{ value }, updateArgs] = useArgs();
 
     function onChange(nextValue: string) {
-      args.onChange?.(nextValue);
       updateArgs({ value: nextValue });
     }
 
