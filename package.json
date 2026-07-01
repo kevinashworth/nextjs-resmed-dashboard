@@ -12,7 +12,8 @@
     "fmt:check": "oxfmt --check",
     "check:types": "tsc --noEmit --skipLibCheck",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "chromatic": "npx chromatic"
   },
   "engines": {
     "node": ">=22.0.0",
