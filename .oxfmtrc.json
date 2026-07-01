@@ -26,7 +26,6 @@
     "order": "asc",
     "sortSideEffects": false
   },
-  "sortPackageJson": false,
   "sortTailwindcss": {
     "stylesheet": "./src/app/globals.css",
     "functions": ["clsx", "cn"]
