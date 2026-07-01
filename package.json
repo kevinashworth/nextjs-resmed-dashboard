@@ -12,14 +12,14 @@
     "fmt:check": "oxfmt --check",
     "check:types": "tsc --noEmit --skipLibCheck",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "chromatic": "npx chromatic"
   },
   "engines": {
     "node": ">=22.0.0",
     "npm": ">=10.9.3"
   },
   "dependencies": {
-    "@headlessui/react": "2.2.10",
     "@radix-ui/react-tabs": "1.1.13",
     "apexcharts": "5.12.0",
     "class-variance-authority": "0.7.1",
@@ -51,6 +51,7 @@
     "@vitest/browser-playwright": "^4.1.9",
     "@vitest/coverage-v8": "^4.1.9",
     "baseline-browser-mapping": "2.10.30",
+    "chromatic": "17.8.0",
     "oxfmt": "0.50.0",
     "oxlint": "1.65.0",
     "playwright": "^1.61.1",
