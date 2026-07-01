@@ -27,7 +27,7 @@ When you have new myAir data to add to the dashboard:
 
    You'll see output like:
 
-   ```
+   ```bash
    Wrote 2 file(s) (41 total records):
      2026-05.json  (20 records)
      2026-06.json  (21 records)
@@ -45,6 +45,24 @@ When you have new myAir data to add to the dashboard:
 | `npm run lint`                            | Run oxlint                                                  |
 | `npm run fmt`                             | Format with oxfmt                                           |
 | `npm run check:types`                     | TypeScript type-check                                       |
+| `npm run storybook`                       | Start Storybook on port 6006                                |
+| `npm run build-storybook`                 | Build a static Storybook bundle                             |
 | `./scripts/update-data.sh`                | Read clipboard, process, and write sleep data (macOS/Linux) |
 | `node scripts/process-data.mjs --help`    | Data processing script help                                 |
 | `node scripts/process-data.mjs --migrate` | Convert all existing files to current format                |
+
+## Component development with Storybook
+
+To browse and test UI components locally, run:
+
+```bash
+npm run storybook
+```
+
+Then open <http://localhost:6006>.
+
+Build a static Storybook bundle with:
+
+```bash
+npm run build-storybook
+```
