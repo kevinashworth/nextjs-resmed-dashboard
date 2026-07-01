@@ -1,30 +1,60 @@
 "use client";
 
-import { ComponentProps, useState } from "react";
+import { useState } from "react";
+import type { ComponentProps } from "react";
 
-import { Switch as LibSwitch } from "@headlessui/react";
 import { cx } from "class-variance-authority";
 
-export function Switch({
-  defaultChecked,
+type SwitchProps = Omit<ComponentProps<"button">, "children" | "onChange"> & {
+  checked?: boolean;
+  defaultChecked?: boolean;
+  label: string;
+  onChange?: (checked: boolean) => void;
+};
+
+function Switch({
+  checked: checkedProp, // Whether or not the switch is checked
+  className,
+  defaultChecked = false, // Default checked value when using as an uncontrolled component
+  disabled = false,
   label,
   onChange,
+  onClick,
   ...rest
-}: { label: string } & ComponentProps<typeof LibSwitch>) {
-  const [checked, setChecked] = useState(defaultChecked);
+}: SwitchProps) {
+  const [internalChecked, setInternalChecked] = useState(defaultChecked);
+  const isControlled = checkedProp !== undefined;
+  const checked = isControlled ? checkedProp : internalChecked;
+
+  function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
+    if (disabled) {
+      return;
+    }
+
+    const nextChecked = !checked;
+
+    if (!isControlled) {
+      setInternalChecked(nextChecked);
+    }
+
+    onChange?.(nextChecked);
+    onClick?.(event);
+  }
 
   return (
-    <LibSwitch
+    <button
       {...rest}
-      checked={checked}
+      aria-checked={checked}
       className={cx(
-        checked ? "bg-accent-600" : "bg-gray-600",
-        "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:ring-2 focus:ring-accent-600 focus:ring-offset-2 focus:outline-hidden",
+        checked ? "bg-accent-500" : "bg-gray-500",
+        "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 focus:outline-hidden",
+        "disabled:cursor-not-allowed disabled:opacity-50",
+        className,
       )}
-      onChange={(checked) => {
-        setChecked(checked);
-        onChange?.(checked);
-      }}
+      disabled={disabled}
+      onClick={handleClick}
+      role="switch"
+      type="button"
     >
       <span className="sr-only">{label}</span>
       <span
@@ -34,6 +64,8 @@ export function Switch({
           "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out",
         )}
       />
-    </LibSwitch>
+    </button>
   );
 }
+
+export default Switch;

@@ -1,12 +1,13 @@
 import { useArgs } from "storybook/preview-api";
 import { fn } from "storybook/test";
 
-import { Switch } from "./Switch";
+import Switch from "./Switch";
 
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 const meta = {
   component: Switch,
+  args: { label: "label", onChange: fn() },
 } satisfies Meta<typeof Switch>;
 
 export default meta;
@@ -14,18 +15,19 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  args: {
-    defaultChecked: false,
-    label: "label",
-    onChange: fn(),
-  },
   render: (args) => {
-    const [{ defaultChecked }, updateArgs] = useArgs();
+    const [{ checked }, updateArgs] = useArgs();
 
     function onChange(checked: boolean) {
-      updateArgs({ defaultChecked: checked });
+      updateArgs({ checked });
     }
 
-    return <Switch {...args} onChange={onChange} defaultChecked={defaultChecked} />;
+    return <Switch {...args} onChange={onChange} checked={checked} />;
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    disabled: true,
   },
 };
