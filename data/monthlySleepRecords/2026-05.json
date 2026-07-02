@@ -346,5 +346,29 @@
     "ahi": 0.7,
     "maskPairCount": 1,
     "leakPercentile": 37.2
+  },
+  {
+    "startDate": "2026-05-30",
+    "totalUsage": 470,
+    "sleepScore": 100,
+    "usageScore": 70,
+    "ahiScore": 5,
+    "maskScore": 5,
+    "leakScore": 20,
+    "ahi": 0.5,
+    "maskPairCount": 1,
+    "leakPercentile": 8.4
+  },
+  {
+    "startDate": "2026-05-31",
+    "totalUsage": 461,
+    "sleepScore": 100,
+    "usageScore": 70,
+    "ahiScore": 5,
+    "maskScore": 5,
+    "leakScore": 20,
+    "ahi": 0.9,
+    "maskPairCount": 1,
+    "leakPercentile": 9.6
   }
 ]

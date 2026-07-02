@@ -1,0 +1,14 @@
+[
+  {
+    "startDate": "2026-07-01",
+    "totalUsage": 481,
+    "sleepScore": 92,
+    "usageScore": 70,
+    "ahiScore": 5,
+    "maskScore": 5,
+    "leakScore": 12,
+    "ahi": 0,
+    "maskPairCount": 2,
+    "leakPercentile": 31.2
+  }
+]
