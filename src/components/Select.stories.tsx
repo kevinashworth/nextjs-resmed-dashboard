@@ -17,6 +17,8 @@ const meta = {
         <option value="option3">Option 3</option>
       </>
     ),
+    // id: "storybook-select",
+    // name: "Choose an option",
   },
 } satisfies Meta<typeof Select>;
 

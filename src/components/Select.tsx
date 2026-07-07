@@ -3,8 +3,27 @@
 import { cx } from "class-variance-authority";
 
 const baseInputStyles =
-  "block w-full rounded-md border-0 py-1.5 shadow-xs ring-1 ring-inset ring-accent-200 focus:ring-2 focus:ring-inset focus:ring-accent-500 sm:text-sm sm:leading-6";
+  "rounded border-gray-300 bg-white text-sm text-black shadow-sm focus:border-blue-500 focus:ring-blue-500";
+const baseLabelStyles = "text-sm font-semibold whitespace-nowrap text-accent-600";
 
-export function Select({ className, ...rest }: React.SelectHTMLAttributes<HTMLSelectElement>) {
-  return <select className={cx(baseInputStyles, "**:text-black", className)} {...rest} />;
+interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  labelClassName?: string;
+  selectClassName?: string;
+}
+
+export function Select({ labelClassName, selectClassName, id, name, ...rest }: SelectProps) {
+  const selectName = id || name || undefined;
+  const showLabel = !!name;
+  const ariaLabel = showLabel ? undefined : selectName || "Select an option";
+
+  return (
+    <div className="flex items-center gap-3 bg-white">
+      {showLabel && (
+        <label className={cx(baseLabelStyles, labelClassName)} htmlFor={selectName}>
+          {selectName}
+        </label>
+      )}
+      <select id={selectName} aria-label={ariaLabel} className={cx(baseInputStyles, selectClassName)} {...rest} />
+    </div>
+  );
 }
