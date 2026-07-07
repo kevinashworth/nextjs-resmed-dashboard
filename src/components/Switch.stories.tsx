@@ -7,7 +7,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 const meta = {
   component: Switch,
-  args: { label: "label", onChange: fn() },
+  args: { label: "label", name: "storybook-switch", onChange: fn() },
 } satisfies Meta<typeof Switch>;
 
 export default meta;
