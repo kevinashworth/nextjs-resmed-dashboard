@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 import { cx } from "class-variance-authority";
 import { format as prettyFormat } from "pretty-format";
