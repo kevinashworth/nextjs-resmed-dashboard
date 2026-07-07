@@ -30,7 +30,7 @@ function SegmentedToggle({ options, value, onChange, disabled }: SegmentedToggle
   const sharedButtonClass = clsx(
     "cursor-pointer border px-3 py-1.5 text-sm font-medium transition-all duration-200 select-none",
     "disabled:cursor-not-allowed disabled:opacity-50",
-    "focus-visible:z-20 focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:outline-none",
+    "focus-visible:z-20 focus-visible:ring-2 focus-visible:ring-accent-600 focus-visible:ring-offset-2 focus-visible:outline-none",
   );
 
   return (
@@ -47,7 +47,7 @@ function SegmentedToggle({ options, value, onChange, disabled }: SegmentedToggle
           sharedButtonClass,
           "relative z-0 -mr-px rounded-l-md",
           isOptionAActive
-            ? "z-10 border-accent-600 bg-accent-500 text-white shadow-sm"
+            ? "z-10 border-accent-700 bg-accent-600 text-white shadow-sm"
             : "border-gray-300 bg-white text-gray-700 hover:bg-gray-100",
         )}
       >
@@ -65,7 +65,7 @@ function SegmentedToggle({ options, value, onChange, disabled }: SegmentedToggle
           sharedButtonClass,
           "relative z-0 -ml-px rounded-r-md",
           isOptionBActive
-            ? "z-10 border-accent-600 bg-accent-500 text-white shadow-sm"
+            ? "z-10 border-accent-700 bg-accent-600 text-white shadow-sm"
             : "border-gray-300 bg-white text-gray-700 hover:bg-gray-100",
         )}
       >
