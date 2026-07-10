@@ -4,6 +4,8 @@ import clsx from "clsx";
 
 import logger from "@/lib/logger";
 
+const baseLabelStyles = "text-sm font-semibold whitespace-nowrap text-accent-600";
+
 interface Option {
   label: string;
   value: string;
@@ -14,9 +16,11 @@ interface SegmentedToggleProps {
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
+  label?: string;
+  labelClassName?: string;
 }
 
-function SegmentedToggle({ options, value, onChange, disabled }: SegmentedToggleProps) {
+function SegmentedToggle({ options, value, onChange, disabled, label, labelClassName }: SegmentedToggleProps) {
   const [optionA, optionB] = options;
   const isOptionAActive = value === optionA.value;
   const isOptionBActive = value === optionB.value;
@@ -34,43 +38,46 @@ function SegmentedToggle({ options, value, onChange, disabled }: SegmentedToggle
   );
 
   return (
-    <div role="radiogroup" aria-label="Select option" className="isolate flex rounded-md shadow-sm">
-      <button
-        aria-checked={isOptionAActive}
-        disabled={isDisabled}
-        role="radio"
-        type="button"
-        onClick={() => {
-          if (!isOptionAActive) onChange(optionA.value);
-        }}
-        className={clsx(
-          sharedButtonClass,
-          "relative z-0 -mr-px rounded-l-md",
-          isOptionAActive
-            ? "z-10 border-accent-700 bg-accent-600 text-white shadow-sm"
-            : "border-gray-300 bg-white text-gray-700 hover:bg-gray-100",
-        )}
-      >
-        {optionA.label}
-      </button>
-      <button
-        aria-checked={isOptionBActive}
-        disabled={isDisabled}
-        role="radio"
-        type="button"
-        onClick={() => {
-          if (!isOptionBActive) onChange(optionB.value);
-        }}
-        className={clsx(
-          sharedButtonClass,
-          "relative z-0 -ml-px rounded-r-md",
-          isOptionBActive
-            ? "z-10 border-accent-700 bg-accent-600 text-white shadow-sm"
-            : "border-gray-300 bg-white text-gray-700 hover:bg-gray-100",
-        )}
-      >
-        {optionB.label}
-      </button>
+    <div className="flex items-center gap-3 bg-white">
+      {label ? <label className={clsx(baseLabelStyles, labelClassName)}>{label}</label> : null}
+      <div role="radiogroup" aria-label={label || "Select option"} className="isolate flex rounded-md shadow-sm">
+        <button
+          aria-checked={isOptionAActive}
+          disabled={isDisabled}
+          role="radio"
+          type="button"
+          onClick={() => {
+            if (!isOptionAActive) onChange(optionA.value);
+          }}
+          className={clsx(
+            sharedButtonClass,
+            "relative z-0 -mr-px rounded-l-md",
+            isOptionAActive
+              ? "z-10 border-accent-700 bg-accent-600 text-white shadow-sm"
+              : "border-gray-300 bg-white text-gray-700 hover:bg-gray-100",
+          )}
+        >
+          {optionA.label}
+        </button>
+        <button
+          aria-checked={isOptionBActive}
+          disabled={isDisabled}
+          role="radio"
+          type="button"
+          onClick={() => {
+            if (!isOptionBActive) onChange(optionB.value);
+          }}
+          className={clsx(
+            sharedButtonClass,
+            "relative z-0 -ml-px rounded-r-md",
+            isOptionBActive
+              ? "z-10 border-accent-700 bg-accent-600 text-white shadow-sm"
+              : "border-gray-300 bg-white text-gray-700 hover:bg-gray-100",
+          )}
+        >
+          {optionB.label}
+        </button>
+      </div>
     </div>
   );
 }

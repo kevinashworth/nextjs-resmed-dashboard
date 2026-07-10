@@ -288,17 +288,15 @@ function PageContent({ data }: { data: TAllData }) {
               max={data.newestDate}
             />
           </div>
-          <div className="flex items-center gap-3">
-            <label className="text-sm font-semibold whitespace-nowrap text-accent-500">Chart Type</label>
-            <SegmentedToggle
-              options={[
-                { label: "Area", value: "area" },
-                { label: "Columns", value: "columns" },
-              ]}
-              value={useColumnsOverride ? "columns" : "area"}
-              onChange={() => toggleColumn()}
-            />
-          </div>
+          <SegmentedToggle
+            label="Chart Type"
+            options={[
+              { label: "Area", value: "area" },
+              { label: "Columns", value: "columns" },
+            ]}
+            value={useColumnsOverride ? "columns" : "area"}
+            onChange={() => toggleColumn()}
+          />
         </div>
       </div>
 
