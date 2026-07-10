@@ -8,7 +8,7 @@ const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 import { AutoSizer } from "react-virtualized-auto-sizer";
 
 import SegmentedToggle from "@/components/SegmentedToggle";
-import { Select } from "@/components/Select";
+import Select from "@/components/Select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { LONG_RANGE_THRESHOLD, chartOptions, series } from "./chart-constants";

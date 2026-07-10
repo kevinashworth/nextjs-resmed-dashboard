@@ -1,4 +1,4 @@
-import { Select } from "./Select";
+import Select from "./Select";
 
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 

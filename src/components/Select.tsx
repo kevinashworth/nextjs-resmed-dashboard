@@ -11,7 +11,7 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   selectClassName?: string;
 }
 
-export function Select({ labelClassName, selectClassName, id, name, ...rest }: SelectProps) {
+function Select({ labelClassName, selectClassName, id, name, ...rest }: SelectProps) {
   const selectName = name || id || undefined;
   const showLabel = !!name;
   const ariaLabel = showLabel ? undefined : selectName || "Select an option";
@@ -27,3 +27,5 @@ export function Select({ labelClassName, selectClassName, id, name, ...rest }: S
     </div>
   );
 }
+
+export default Select;
