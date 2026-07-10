@@ -1,4 +1,4 @@
-import { cx } from "class-variance-authority";
+import clsx from "clsx";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import type { Metadata } from "next";
@@ -28,7 +28,7 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cx(geistSans.variable, geistMono.variable, "antialiased")}>
+      <body className={clsx(geistSans.variable, geistMono.variable, "antialiased")}>
         <main className="m-1 p-1">{children}</main>
       </body>
     </html>

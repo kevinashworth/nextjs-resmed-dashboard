@@ -8,6 +8,18 @@ import * as SegmentedToggleStories from "./SegmentedToggle.stories";
 
 A segmented toggle is a thing. Choose your option.
 
+## Colors
+
+Defined in `globals.css`:
+
+```css
+--color-accent-500: oklch(0.5977777777777777 0.1355 40); /* #c15f3c */
+--color-accent-600: oklch(0.5133333333333333 0.1164 40); /* #9d4c2f */
+--color-accent-700: oklch(0.4288888888888889 0.0974 40); /* #7b3a23 */
+```
+
+The background color of the selected part of the segmented toggle was `accent-500`. With white text, this gives a color-contrast of **4.22**, less than the a11y guideline of **4.5**. So I changed the background color to `accent-600` which gives a color-contrast of **5.98**, and bumped the border color to `accent-700`.
+
 <Canvas of={SegmentedToggleStories.Toggle} />
 <Controls />
 

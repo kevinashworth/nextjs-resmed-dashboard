@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
-import { cx } from "class-variance-authority";
+import clsx from "clsx";
 import { format as prettyFormat } from "pretty-format";
 
 interface Props {
@@ -38,7 +38,7 @@ function DisplayJSON({ className = "", consoleLog, consoleTitle, json, options: 
   }, [consoleLog, consoleTitle, json]);
 
   return (
-    <div className={cx("text-xs", { [className]: !!className })}>
+    <div className={clsx("text-xs", { [className]: !!className })}>
       <pre
         style={{
           overflow: "hidden",
