@@ -8,6 +8,7 @@ const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 import { AutoSizer } from "react-virtualized-auto-sizer";
 
 import SegmentedToggle from "@/components/SegmentedToggle";
+import { Select } from "@/components/Select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { LONG_RANGE_THRESHOLD, chartOptions, series } from "./chart-constants";
@@ -237,30 +238,26 @@ function PageContent({ data }: { data: TAllData }) {
           Sleep Data
         </h1>
         <div className="flex flex-row items-start gap-4">
-          <div className="flex items-center gap-3">
-            <label htmlFor="preset-range" className="text-sm font-semibold whitespace-nowrap text-accent-500">
-              Date Range
-            </label>
-            <select
-              id="preset-range"
-              autoComplete="off"
-              className="rounded border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              value={selectedPreset}
-              onChange={handlePresetChange}
-            >
-              <option value="last30">Last 30 Days</option>
-              <option value="last60">Last 60 Days</option>
-              <option value="last90">Last 90 Days</option>
-              <option value="last180">Last 180 Days</option>
-              <option value="last365">Last 365 Days</option>
-              <option value="lastMonth">Last Calendar Month</option>
-              <option value="lastYear">Last Calendar Year</option>
-              <option value="thisMonth">This Calendar Month</option>
-              <option value="thisYear">This Calendar Year</option>
-              <option value="allTime">All Days</option>
-              <option value="custom">Custom Range →</option>
-            </select>
-          </div>
+          <Select
+            id="preset-range"
+            name="Date Range"
+            autoComplete="off"
+            value={selectedPreset}
+            onChange={handlePresetChange}
+            selectClassName="min-w-[180px]"
+          >
+            <option value="last30">Last 30 Days</option>
+            <option value="last60">Last 60 Days</option>
+            <option value="last90">Last 90 Days</option>
+            <option value="last180">Last 180 Days</option>
+            <option value="last365">Last 365 Days</option>
+            <option value="lastMonth">Last Calendar Month</option>
+            <option value="lastYear">Last Calendar Year</option>
+            <option value="thisMonth">This Calendar Month</option>
+            <option value="thisYear">This Calendar Year</option>
+            <option value="allTime">All Days</option>
+            <option value="custom">Custom Range →</option>
+          </Select>
           <div className="flex items-center gap-3">
             <label htmlFor="start-date" className="text-sm font-medium whitespace-nowrap text-gray-700">
               Start Date
