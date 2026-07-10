@@ -1,6 +1,6 @@
 "use client";
 
-import { cx } from "class-variance-authority";
+import clsx from "clsx";
 
 const baseInputStyles =
   "rounded border-gray-300 bg-white text-sm text-black shadow-sm focus:border-blue-500 focus:ring-blue-500";
@@ -19,11 +19,11 @@ export function Select({ labelClassName, selectClassName, id, name, ...rest }: S
   return (
     <div className="flex items-center gap-3 bg-white">
       {showLabel && (
-        <label className={cx(baseLabelStyles, labelClassName)} htmlFor={selectName}>
+        <label className={clsx(baseLabelStyles, labelClassName)} htmlFor={selectName}>
           {selectName}
         </label>
       )}
-      <select id={selectName} aria-label={ariaLabel} className={cx(baseInputStyles, selectClassName)} {...rest} />
+      <select id={selectName} aria-label={ariaLabel} className={clsx(baseInputStyles, selectClassName)} {...rest} />
     </div>
   );
 }

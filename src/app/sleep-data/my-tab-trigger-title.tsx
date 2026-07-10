@@ -1,6 +1,6 @@
 import React, { ComponentType } from "react";
 
-import { cx } from "class-variance-authority";
+import clsx from "clsx";
 
 import EventsIcon from "./icons/icon-events";
 import HoursIcon from "./icons/icon-hours";
@@ -43,7 +43,7 @@ function MyTabTriggerTitle({ name = "events", title = "Events" }: Props) {
   const IconComponent = iconComponent[name];
   return (
     <div className="flex flex-col items-center justify-start">
-      <IconComponent className={cx(fillClass[name], "size-12")} />
+      <IconComponent className={clsx(fillClass[name], "size-12")} />
       <h2 className="text-xs font-medium text-gray-500">{title}</h2>
       <div className="h-0 w-24 bg-white in-[.active]:bg-gray-50"></div>
     </div>
