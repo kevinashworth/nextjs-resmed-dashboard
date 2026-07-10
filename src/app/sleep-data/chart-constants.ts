@@ -6,7 +6,7 @@ import type { ApexFormatterOpts, ApexOptions } from "apexcharts";
 
 import type { TChartDataPoint, TTabNames } from "@/lib/data-types";
 
-export const LONG_RANGE_THRESHOLD = 180; // Day count threshold for "long range" (default area charts)
+export const LONG_RANGE_THRESHOLD = 365; // long date range, above which the chart defaults to area charts
 
 // https://stackoverflow.com/a/35970186/7082724
 function invertColor(hex: string) {
