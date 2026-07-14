@@ -13,7 +13,8 @@
     "check:types": "tsc --noEmit --skipLibCheck",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "chromatic": "npx chromatic"
+    "chromatic": "npx chromatic --project-token=chpt_6cd2891e1adef93",
+    "chromatic:dry-run": "npx chromatic --project-token=chpt_6cd2891e1adef93 --dry-run"
   },
   "dependencies": {
     "@radix-ui/react-tabs": "1.1.17",
@@ -40,13 +41,13 @@
     "@tailwindcss/forms": "0.5.11",
     "@tailwindcss/postcss": "4.3.2",
     "@types/lodash.debounce": "4.0.9",
-    "@types/node": "25.9.5",
+    "@types/node": "26.1.1",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "@vitest/browser-playwright": "4.1.10",
     "@vitest/coverage-v8": "4.1.10",
     "baseline-browser-mapping": "2.10.42",
-    "chromatic": "17.8.0",
+    "chromatic": "18.0.1",
     "oxfmt": "0.58.0",
     "oxlint": "1.73.0",
     "playwright": "^1.61.1",
