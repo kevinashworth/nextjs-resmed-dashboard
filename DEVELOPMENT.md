@@ -47,6 +47,7 @@ When you have new myAir data to add to the dashboard:
 | `npm run check:types`                     | TypeScript type-check                                       |
 | `npm run storybook`                       | Start Storybook on port 6006                                |
 | `npm run build-storybook`                 | Build a static Storybook bundle                             |
+| `npx http-server ./storybook-static`      | Serve the static Storybook build locally for preview        |
 | `npm run chromatic`                       | Publish the current Storybook to Chromatic                  |
 | `npm run chromatic:dry-run`               | Validate the local Chromatic setup without publishing       |
 | `./scripts/update-data.sh`                | Read clipboard, process, and write sleep data (macOS/Linux) |
@@ -70,6 +71,14 @@ Build a static Storybook bundle with:
 ```bash
 npm run build-storybook
 ```
+
+Preview the static Storybook build locally with:
+
+```bash
+npx http-server ./storybook-static
+```
+
+Then open <http://127.0.0.1:8080> (default `http-server` port).
 
 ### Chromatic
 
