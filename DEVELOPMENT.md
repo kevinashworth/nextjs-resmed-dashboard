@@ -47,11 +47,15 @@ When you have new myAir data to add to the dashboard:
 | `npm run check:types`                     | TypeScript type-check                                       |
 | `npm run storybook`                       | Start Storybook on port 6006                                |
 | `npm run build-storybook`                 | Build a static Storybook bundle                             |
+| `npm run chromatic`                       | Publish the current Storybook to Chromatic                  |
+| `npm run chromatic:dry-run`               | Validate the local Chromatic setup without publishing       |
 | `./scripts/update-data.sh`                | Read clipboard, process, and write sleep data (macOS/Linux) |
 | `node scripts/process-data.mjs --help`    | Data processing script help                                 |
 | `node scripts/process-data.mjs --migrate` | Convert all existing files to current format                |
 
-## Component development with Storybook
+## Component development with Storybook and Chromatic
+
+### Storybook
 
 To browse and test UI components locally, run:
 
@@ -66,3 +70,24 @@ Build a static Storybook bundle with:
 ```bash
 npm run build-storybook
 ```
+
+### Chromatic
+
+Chromatic is part of the UI review path for Storybook changes.
+
+- GitHub Actions runs Chromatic automatically on every push using the repo secret `CHROMATIC_PROJECT_TOKEN`.
+- Local Chromatic runs are optional, but useful when you want faster feedback before pushing a UI or story change.
+
+To enable local runs, set `CHROMATIC_PROJECT_TOKEN` in your shell or in `.env`:
+
+```bash
+CHROMATIC_PROJECT_TOKEN=your-project-token
+```
+
+Then you can run:
+
+```bash
+npm run chromatic:dry-run
+```
+
+Use `npm run chromatic` only when you intentionally want to publish from your local machine. In normal development, pushing your branch is enough to trigger the authoritative Chromatic run in GitHub Actions.
