@@ -7,5 +7,24 @@ const config: StorybookConfig = {
   core: {
     disableTelemetry: true,
   },
+  viteFinal: async (config) => {
+    config.build ??= {};
+
+    config.build.chunkSizeWarningLimit = 1_322;
+
+    config.build.rolldownOptions = {
+      ...config.build.rolldownOptions,
+      onLog(level, log, defaultHandler) {
+        if (level === "warn" && log.code === "MODULE_LEVEL_DIRECTIVE") {
+          return;
+        }
+
+        defaultHandler(level, log);
+      },
+    };
+
+    return config;
+  },
 };
+
 export default config;
