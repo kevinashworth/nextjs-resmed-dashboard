@@ -17,7 +17,7 @@
     "chromatic:dry-run": "npx chromatic --dry-run"
   },
   "dependencies": {
-    "@radix-ui/react-tabs": "1.1.17",
+    "@radix-ui/react-tabs": "1.1.21",
     "apexcharts": "5.16.0",
     "clsx": "2.1.1",
     "fast-glob": "3.3.3",
@@ -39,7 +39,7 @@
     "@storybook/addon-vitest": "10.5.0",
     "@storybook/nextjs-vite": "10.5.0",
     "@tailwindcss/forms": "0.5.11",
-    "@tailwindcss/postcss": "4.3.2",
+    "@tailwindcss/postcss": "4.3.3",
     "@types/lodash.debounce": "4.0.9",
     "@types/node": "26.1.1",
     "@types/react": "19.2.17",
@@ -51,9 +51,9 @@
     "oxfmt": "0.58.0",
     "oxlint": "1.73.0",
     "playwright": "1.61.1",
-    "postcss": "8.5.16",
+    "postcss": "8.5.28",
     "storybook": "10.5.0",
-    "tailwindcss": "4.3.2",
+    "tailwindcss": "4.3.3",
     "typescript": "6.0.3",
     "vite": "8.1.4",
     "vitest": "4.1.10"
