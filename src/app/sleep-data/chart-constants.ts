@@ -36,6 +36,7 @@ const yAxisOptionsBase: ApexOptions["yaxis"] = {
       return `${Math.floor(d)}`;
     },
   },
+  min: 0,
 };
 
 const yAxisOptionsHours: ApexOptions["yaxis"] = {
