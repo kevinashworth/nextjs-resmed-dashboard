@@ -1,0 +1,50 @@
+[
+  {
+    "startDate": "2026-10-01",
+    "totalUsage": 536,
+    "sleepScore": 96,
+    "usageScore": 70,
+    "ahiScore": 5,
+    "maskScore": 4,
+    "leakScore": 17,
+    "ahi": 0.5,
+    "maskPairCount": 3,
+    "leakPercentile": 22.8
+  },
+  {
+    "startDate": "2026-10-02",
+    "totalUsage": 396,
+    "sleepScore": 93,
+    "usageScore": 66,
+    "ahiScore": 5,
+    "maskScore": 5,
+    "leakScore": 17,
+    "ahi": 0.1,
+    "maskPairCount": 2,
+    "leakPercentile": 22.8
+  },
+  {
+    "startDate": "2026-10-03",
+    "totalUsage": 499,
+    "sleepScore": 100,
+    "usageScore": 70,
+    "ahiScore": 5,
+    "maskScore": 5,
+    "leakScore": 20,
+    "ahi": 0.1,
+    "maskPairCount": 2,
+    "leakPercentile": 10.8
+  },
+  {
+    "startDate": "2026-10-04",
+    "totalUsage": 574,
+    "sleepScore": 93,
+    "usageScore": 70,
+    "ahiScore": 5,
+    "maskScore": 4,
+    "leakScore": 14,
+    "ahi": 1.3,
+    "maskPairCount": 3,
+    "leakPercentile": 27.6
+  }
+]
