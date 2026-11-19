@@ -110,3 +110,5 @@ Demo mode adds a **Try the demo** button to `/login`. It signs visitors in as a 
 3. Run `npm run db:seed:demo` to load the demo data. Run it again at any time to restore the data.
 
 The login page reads `DEMO_MODE` on each request, so turning demo mode on or off only needs a server restart, not a rebuild.
+
+Visitors share the demo account, so the migration `protect_demo_user` stops anyone from changing its password, email or phone. That migration names the account `demo@example.com`, so keep `SUPABASE_DEMO_EMAIL` set to that address. Visitors can still change the demo's sleep records; `npm run db:seed:demo` restores them.
