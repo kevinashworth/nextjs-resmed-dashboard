@@ -1,41 +1,40 @@
-import { glob } from "fast-glob";
-import { promises as fs } from "fs";
-import path from "path";
+import { createOwnerClient } from "@/lib/supabase/owner-client";
 
-import { DataFileSchema } from "@/lib/data-types";
-
-import type { TAllData, TChartData, TDataFile, TSleepRecord } from "@/lib/data-types";
+import type { TAllData, TChartData, TSleepRecord } from "@/lib/data-types";
 
 const getData = async () => {
-  const dataPath = path.join(process.cwd(), "data");
-  const months = await glob(`${dataPath}/monthlySleepRecords/*.json`);
+  const supabase = await createOwnerClient();
+  const PAGE_SIZE = 1000;
+  const rows = [];
+  for (let from = 0; ; from += PAGE_SIZE) {
+    const { data, error } = await supabase
+      .from("sleep_records")
+      .select("*")
+      .order("start_date")
+      .range(from, from + PAGE_SIZE - 1);
+    if (error) throw error;
+    rows.push(...data);
+    if (data.length < PAGE_SIZE) break;
+  }
 
-  const allMonthsData: TDataFile[] = await Promise.all(
-    months.map(async (month) => {
-      const file = await fs.readFile(month, "utf8");
-      const data = JSON.parse(file);
-      const result = DataFileSchema.safeParse(data);
-      if (!result.success) {
-        console.error(`Error in file ${month}:`, result.error);
-      }
-      return data;
-    }),
-  );
+  if (rows.length === 0) {
+    throw new Error("No sleep records found in the database.");
+  }
 
   // Combine all months' data into a single array of sleep records.
   // For timestamp, we convert startDate to timestamp once here for efficiency.
-  const combinedData: TSleepRecord[] = allMonthsData.flat().map((item) => ({
-    startDate: item.startDate,
-    timestamp: new Date(item.startDate).getTime(),
-    events: item.ahi,
-    leak: item.leakPercentile,
-    mask: item.maskPairCount,
-    score: item.sleepScore,
-    hours: item.totalUsage,
-    usageScore: item.usageScore,
-    ahiScore: item.ahiScore,
-    maskScore: item.maskScore,
-    leakScore: item.leakScore,
+  const combinedData: TSleepRecord[] = rows.map((row) => ({
+    startDate: row.start_date,
+    timestamp: new Date(row.start_date).getTime(),
+    events: row.ahi,
+    leak: row.leak_percentile,
+    mask: row.mask_pair_count,
+    score: row.sleep_score,
+    hours: row.total_usage,
+    usageScore: row.usage_score,
+    ahiScore: row.ahi_score,
+    maskScore: row.mask_score,
+    leakScore: row.leak_score,
   }));
 
   const oldestDate = combinedData[0].startDate;
