@@ -21,17 +21,22 @@ export default async function Page() {
   const data = await getData(supabase);
   const showOwnerName = !isDemoUser(auth.claims.email);
 
-  return (
-    <PageContent
-      data={data}
-      showOwnerName={showOwnerName}
-      actions={
-        <form action={signOut}>
-          <Button type="submit" variant="secondary">
-            Sign out
-          </Button>
-        </form>
-      }
-    />
+  const signOutForm = (
+    <form action={signOut}>
+      <Button type="submit" variant="secondary">
+        Sign out
+      </Button>
+    </form>
   );
+
+  if (!data) {
+    return (
+      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
+        <p className="text-gray-700">No sleep data yet.</p>
+        {signOutForm}
+      </div>
+    );
+  }
+
+  return <PageContent data={data} showOwnerName={showOwnerName} actions={signOutForm} />;
 }

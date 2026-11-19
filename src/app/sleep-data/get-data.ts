@@ -9,7 +9,10 @@ const getData = async (supabase: SupabaseClient<Database>) => {
   for (let from = 0; ; from += PAGE_SIZE) {
     const { data, error } = await supabase
       .from("sleep_records")
-      .select("*")
+      // Only the columns the charts use, not user_id or created_at.
+      .select(
+        "start_date,total_usage,sleep_score,usage_score,ahi_score,mask_score,leak_score,ahi,mask_pair_count,leak_percentile",
+      )
       .order("start_date")
       .range(from, from + PAGE_SIZE - 1);
     if (error) throw error;
@@ -17,12 +20,12 @@ const getData = async (supabase: SupabaseClient<Database>) => {
     if (data.length < PAGE_SIZE) break;
   }
 
+  // A signed-in user with no records gets an empty state instead of an error page.
   if (rows.length === 0) {
-    throw new Error("No sleep records found in the database.");
+    return null;
   }
 
-  // Combine all months' data into a single array of sleep records.
-  // For timestamp, we convert startDate to timestamp once here for efficiency.
+  // Convert each database row (snake_case) to a TSleepRecord, computing the timestamp once here.
   const combinedData: TSleepRecord[] = rows.map((row) => ({
     startDate: row.start_date,
     timestamp: new Date(row.start_date).getTime(),
