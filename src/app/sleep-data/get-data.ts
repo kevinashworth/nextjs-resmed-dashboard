@@ -1,9 +1,9 @@
-import { createOwnerClient } from "@/lib/supabase/owner-client";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 import type { TAllData, TChartData, TSleepRecord } from "@/lib/data-types";
+import type { Database } from "@/lib/supabase/database.types";
 
-const getData = async () => {
-  const supabase = await createOwnerClient();
+const getData = async (supabase: SupabaseClient<Database>) => {
   const PAGE_SIZE = 1000;
   const rows = [];
   for (let from = 0; ; from += PAGE_SIZE) {
