@@ -1,5 +1,6 @@
-import { useArgs } from "storybook/preview-api";
-import { expect, fn } from "storybook/test";
+import { useState } from "react";
+
+import { expect, fn, waitFor } from "storybook/test";
 
 import SegmentedToggle from "./SegmentedToggle";
 
@@ -21,29 +22,32 @@ export const Toggle: Story = {
       { label: "Option 1", value: "option1" },
       { label: "Option 2", value: "option2" },
     ],
-    value: "option1",
+    value: "option2",
   },
   play: async function ({ canvas, step, userEvent }) {
     await step("Clicking on the A option", async () => {
       const optionA = canvas.getByRole("radio", { name: "Option 1" });
       await userEvent.click(optionA);
-      await expect(optionA).toHaveAttribute("aria-checked", "true");
+      // The re-render happens after the click, so wait for it instead of checking immediately.
+      await waitFor(() => expect(optionA).toHaveAttribute("aria-checked", "true"));
     });
 
     await step("Clicking on the B option", async () => {
       const optionB = canvas.getByRole("radio", { name: "Option 2" });
       await userEvent.click(optionB);
-      await expect(optionB).toHaveAttribute("aria-checked", "true");
+      await waitFor(() => expect(optionB).toHaveAttribute("aria-checked", "true"));
 
       // to avoid leaving SegmentedToggle with optionB selected and its ring visible, click on body to remove focus from SegmentedToggle
       await userEvent.pointer({ target: document.body, keys: "[MouseLeft]" });
     });
   },
-  render: (args) => {
-    const [{ value }, updateArgs] = useArgs();
+  // Local state, not useArgs: useArgs updates don't re-render the story when tests run in Vitest.
+  render: function Render(args) {
+    const [value, setValue] = useState(args.value);
 
     function onChange(nextValue: string) {
-      updateArgs({ value: nextValue });
+      args.onChange(nextValue);
+      setValue(nextValue);
     }
 
     return <SegmentedToggle {...args} onChange={onChange} value={value} />;

@@ -1,10 +1,8 @@
-"use client";
-
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 
 const baseInputStyles =
-  "block w-full rounded-md border-0 py-1.5 shadow-xs ring-1 ring-inset ring-accent-200 focus:ring-2 focus:ring-inset focus:ring-accent-500 sm:text-sm sm:leading-6";
+  "rounded-md border border-gray-300 bg-white py-1.5 text-sm font-normal text-gray-900 shadow-xs transition-all duration-200 focus:ring-accent-500 focus-visible:ring-2 focus-visible:ring-accent-600 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50";
 
 export function Input({ className, ...rest }: React.InputHTMLAttributes<HTMLInputElement>) {
-  return <input className={clsx(baseInputStyles, className)} {...rest} />;
+  return <input className={cn(baseInputStyles, className)} {...rest} />;
 }
