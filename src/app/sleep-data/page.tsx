@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { signOut } from "@/app/login/actions";
 import { Button } from "@/components/Button";
+import { isDemoUser } from "@/lib/demo";
 import { createClient } from "@/lib/supabase/server";
 
 import getData from "./get-data";
@@ -18,10 +19,12 @@ export default async function Page() {
   }
 
   const data = await getData(supabase);
+  const showOwnerName = !isDemoUser(auth.claims.email);
 
   return (
     <PageContent
       data={data}
+      showOwnerName={showOwnerName}
       actions={
         <form action={signOut}>
           <Button type="submit" variant="secondary">

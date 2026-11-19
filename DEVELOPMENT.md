@@ -100,3 +100,13 @@ npm run chromatic:dry-run
 ```
 
 Use `npm run chromatic` only when you intentionally want to publish from your local machine. In normal development, pushing your branch is enough to trigger the authoritative Chromatic run in GitHub Actions.
+
+## Demo mode
+
+Demo mode adds a **Try the demo** button to `/login`. It signs visitors in as a shared demo user, which has its own copy of 730 recent nights. Row Level Security keeps the demo user away from the owner's data.
+
+1. In `.env.local`, set `DEMO_MODE=true`, `SUPABASE_DEMO_EMAIL` and `SUPABASE_DEMO_PASSWORD`. These are server-only.
+2. Create the demo user in Studio under **Authentication → Users → Add user**, using that email and password. `npx supabase db reset` deletes all users, so repeat this after every reset.
+3. Run `npm run db:seed:demo` to load the demo data. Run it again at any time to restore the data.
+
+The login page reads `DEMO_MODE` on each request, so turning demo mode on or off only needs a server restart, not a rebuild.

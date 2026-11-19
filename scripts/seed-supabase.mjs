@@ -1,21 +1,31 @@
 #!/usr/bin/env node
-// Load every record in data/monthlySleepRecords into Supabase as the owner user.
+// Load records from data/monthlySleepRecords into Supabase.
 // Writes go through Row Level Security, so this script only uses the publishable key.
-// Usage: npm run db:seed
+// Usage:
+//   npm run db:seed        every record, as the owner user
+//   npm run db:seed:demo   the most recent DEMO_RECORD_COUNT records, as the demo user
 
 import { createClient } from "@supabase/supabase-js";
 import { promises as fs } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
+import { applyDemoScenarios } from "./demo-scenarios.mjs";
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = path.resolve(__dirname, "..", "data", "monthlySleepRecords");
+const DEMO_RECORD_COUNT = 365 * 2;
+
+const isDemo = process.argv.includes("--demo");
+const account = isDemo
+  ? { label: "demo user", emailVar: "SUPABASE_DEMO_EMAIL", passwordVar: "SUPABASE_DEMO_PASSWORD" }
+  : { label: "owner", emailVar: "SUPABASE_OWNER_EMAIL", passwordVar: "SUPABASE_OWNER_PASSWORD" };
 
 const REQUIRED_ENV = [
   "NEXT_PUBLIC_SUPABASE_URL",
   "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
-  "SUPABASE_OWNER_EMAIL",
-  "SUPABASE_OWNER_PASSWORD",
+  account.emailVar,
+  account.passwordVar,
 ];
 
 function fail(message) {
@@ -34,13 +44,13 @@ const supabase = createClient(
   { auth: { persistSession: false } }, // a script has no browser to store a session in
 );
 
-// 1. Sign in as the owner. Every row is written with this user's id.
+// 1. Sign in. Every row is written with this user's id.
 const { data: signIn, error: signInError } = await supabase.auth.signInWithPassword({
-  email: process.env.SUPABASE_OWNER_EMAIL,
-  password: process.env.SUPABASE_OWNER_PASSWORD,
+  email: process.env[account.emailVar],
+  password: process.env[account.passwordVar],
 });
 if (signInError) {
-  fail(`could not sign in as the owner: ${signInError.message}`);
+  fail(`could not sign in as the ${account.label}: ${signInError.message}`);
 }
 const userId = signIn.user.id;
 
@@ -51,9 +61,13 @@ for (const fileName of fileNames) {
   const raw = await fs.readFile(path.join(DATA_DIR, fileName), "utf8");
   records.push(...JSON.parse(raw));
 }
+records.sort((a, b) => a.startDate.localeCompare(b.startDate));
+
+// The demo gets only the most recent records, with simulated scenarios such as a rough patch in July 2026.
+const selected = isDemo ? applyDemoScenarios(records.slice(-DEMO_RECORD_COUNT)) : records;
 
 // 3. Convert each JSON record (camelCase) to a database row (snake_case).
-const rows = records.map((record) => ({
+const rows = selected.map((record) => ({
   user_id: userId,
   start_date: record.startDate,
   total_usage: record.totalUsage,
@@ -79,8 +93,8 @@ if (countError) {
   fail(`count failed: ${countError.message}`);
 }
 
-console.log(`Read ${rows.length} records from ${fileNames.length} files.`);
-console.log(`The owner now has ${count} rows in sleep_records.`);
+console.log(`Loaded ${rows.length} of ${records.length} records (${rows[0].start_date} to ${rows.at(-1).start_date}).`);
+console.log(`The ${account.label} now has ${count} rows in sleep_records.`);
 if (count < rows.length) {
   fail(`expected at least ${rows.length} rows, so some records did not load`);
 }
