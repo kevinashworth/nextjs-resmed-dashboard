@@ -38,11 +38,22 @@ export async function updateSession(request: NextRequest) {
 
   const user = data?.claims;
 
-  if (!user && !request.nextUrl.pathname.startsWith("/login") && !request.nextUrl.pathname.startsWith("/auth")) {
-    // no user, potentially respond by redirecting the user to the login page
+  const isLoginPage = request.nextUrl.pathname.startsWith("/login");
+
+  // Signed-out visitors go to the login page.
+  if (!user && !isLoginPage) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
+  }
+
+  // Signed-in users don't need the login page. Copy any refreshed session cookies onto the redirect.
+  if (user && isLoginPage) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/sleep-data";
+    const redirectResponse = NextResponse.redirect(url);
+    supabaseResponse.cookies.getAll().forEach((cookie) => redirectResponse.cookies.set(cookie));
+    return redirectResponse;
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're
