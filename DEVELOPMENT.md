@@ -101,6 +101,10 @@ npm run chromatic:dry-run
 
 Use `npm run chromatic` only when you intentionally want to publish from your local machine. In normal development, pushing your branch is enough to trigger the authoritative Chromatic run in GitHub Actions.
 
+## Database tests
+
+`npm run db:test` runs the pgTAP tests in `supabase/tests/` against the local database. They cover the Row Level Security policies, the demo account protection and the table's checks. Each test runs in a transaction that is rolled back, so it leaves your data unchanged. Supabase must be running (`npx supabase start`).
+
 ## Demo mode
 
 Demo mode adds a **Try the demo** button to `/login`. It signs visitors in as a shared demo user, which has its own copy of 730 recent nights. Row Level Security keeps the demo user away from the owner's data.
