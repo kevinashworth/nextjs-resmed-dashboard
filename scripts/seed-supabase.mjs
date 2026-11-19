@@ -56,11 +56,9 @@ const userId = signIn.user.id;
 
 // 2. Read every monthly JSON file.
 const fileNames = (await fs.readdir(DATA_DIR)).filter((name) => name.endsWith(".json")).sort();
-const records = [];
-for (const fileName of fileNames) {
-  const raw = await fs.readFile(path.join(DATA_DIR, fileName), "utf8");
-  records.push(...JSON.parse(raw));
-}
+const records = (
+  await Promise.all(fileNames.map((fileName) => fs.readFile(path.join(DATA_DIR, fileName), "utf8").then(JSON.parse)))
+).flat();
 records.sort((a, b) => a.startDate.localeCompare(b.startDate));
 
 // The demo gets only the most recent records, with simulated scenarios such as a rough patch in July 2026.
@@ -81,20 +79,45 @@ const rows = selected.map((record) => ({
   leak_percentile: record.leakPercentile,
 }));
 
-// 4. Insert new rows, and update rows whose (user_id, start_date) already exists.
-const { error: upsertError } = await supabase.from("sleep_records").upsert(rows, { onConflict: "user_id,start_date" });
+if (rows.length === 0) {
+  fail(`no records found in ${DATA_DIR}`);
+}
+const firstDate = rows[0].start_date;
+const lastDate = rows.at(-1).start_date;
+
+// 4. The demo keeps only the selected date range, so remove rows left over from earlier runs.
+//    The owner seed never deletes, because the database may hold data that isn't in the JSON files.
+if (isDemo) {
+  const { count: deleted, error: deleteError } = await supabase
+    .from("sleep_records")
+    .delete({ count: "exact" })
+    .eq("user_id", userId)
+    .or(`start_date.lt.${firstDate},start_date.gt.${lastDate}`);
+  if (deleteError) {
+    fail(`delete failed: ${deleteError.message}`);
+  }
+  if (deleted > 0) {
+    console.log(`Removed ${deleted} rows outside ${firstDate} to ${lastDate}.`);
+  }
+}
+
+// 5. Insert new rows, and update rows whose (user_id, start_date) already exists.
+//    count is the number of rows actually written. RLS can block writes without an error,
+//    so compare it with what was sent instead of trusting a missing error.
+const { count: written, error: upsertError } = await supabase
+  .from("sleep_records")
+  .upsert(rows, { onConflict: "user_id,start_date", count: "exact" });
 if (upsertError) {
   fail(`upsert failed: ${upsertError.message}`);
 }
+if (written !== rows.length) {
+  fail(`sent ${rows.length} rows but only ${written} were written`);
+}
 
-// 5. Verify. RLS can block writes without returning an error, so count what is actually there.
 const { count, error: countError } = await supabase.from("sleep_records").select("*", { count: "exact", head: true });
 if (countError) {
   fail(`count failed: ${countError.message}`);
 }
 
-console.log(`Loaded ${rows.length} of ${records.length} records (${rows[0].start_date} to ${rows.at(-1).start_date}).`);
+console.log(`Wrote ${written} of ${records.length} records (${firstDate} to ${lastDate}).`);
 console.log(`The ${account.label} now has ${count} rows in sleep_records.`);
-if (count < rows.length) {
-  fail(`expected at least ${rows.length} rows, so some records did not load`);
-}
