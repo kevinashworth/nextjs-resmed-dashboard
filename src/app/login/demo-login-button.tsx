@@ -4,23 +4,19 @@ import { useActionState } from "react";
 
 import { Button } from "@/components/Button";
 
-import { signInAsDemo, type LoginState } from "./actions";
-
-const initialState: LoginState = { error: null };
+import { signInAsDemo } from "./actions";
+import FormError from "./form-error";
+import { initialLoginState } from "./login-state";
 
 export default function DemoLoginButton() {
-  const [state, formAction, isPending] = useActionState(signInAsDemo, initialState);
+  const [state, formAction, isPending] = useActionState(signInAsDemo, initialLoginState);
 
   return (
     <form action={formAction} className="flex w-72 flex-col gap-3">
       <Button type="submit" variant="secondary" disabled={isPending} className="w-full">
         {isPending ? "Opening the demo…" : "Try the demo"}
       </Button>
-      {state.error ? (
-        <p role="alert" className="text-sm text-red-700">
-          {state.error}
-        </p>
-      ) : null}
+      <FormError message={state.error} />
     </form>
   );
 }
