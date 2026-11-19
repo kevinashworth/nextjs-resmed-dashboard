@@ -11,6 +11,7 @@
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "check:types": "tsc --noEmit --skipLibCheck",
+    "db:seed": "node --env-file=.env.local scripts/seed-supabase.mjs",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "chromatic": "npx chromatic",
