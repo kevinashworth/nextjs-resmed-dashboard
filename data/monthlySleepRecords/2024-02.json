@@ -9,9 +9,7 @@
     "leakScore": 0,
     "ahi": 8.2,
     "maskPairCount": 10,
-    "leakPercentile": 79.2,
-    "leakPercentile_original": 84,
-    "leakPercentile_second_highest_value": 79.2
+    "leakPercentile": 79.2
   },
   {
     "startDate": "2024-02-02",

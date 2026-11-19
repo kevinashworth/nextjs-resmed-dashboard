@@ -164,8 +164,6 @@
     "maskScore": 0,
     "leakScore": 0,
     "ahi": 10.4,
-    "ahi_original_value": 31.6,
-    "ahi_second_highest_value": 10.4,
     "maskPairCount": 5,
     "leakPercentile": 79.2
   },
