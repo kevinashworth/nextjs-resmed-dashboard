@@ -1,22 +1,3 @@
-import { z } from "zod";
-
-const SleepRecordInputSchema = z.object({
-  startDate: z.string(),
-  ahi: z.number(),
-  leakPercentile: z.number(),
-  maskPairCount: z.number(),
-  sleepScore: z.number(),
-  totalUsage: z.number(),
-  // Component scores
-  usageScore: z.number(),
-  ahiScore: z.number(),
-  maskScore: z.number(),
-  leakScore: z.number(),
-});
-
-export const DataFileSchema = z.array(SleepRecordInputSchema);
-export type TDataFile = z.infer<typeof DataFileSchema>;
-
 export type TSleepRecord = {
   startDate: string;
   timestamp: number;

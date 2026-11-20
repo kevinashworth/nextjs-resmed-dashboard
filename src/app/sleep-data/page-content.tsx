@@ -23,7 +23,17 @@ const INITIAL_STARTDATE_DAYS_AGO = 90; // 30, 60, 90, 180, 365
 const INITIAL_SELECTED_PRESET = ("last" + INITIAL_STARTDATE_DAYS_AGO) as TSelectedPreset;
 const INITIAL_TAB: TTabNames = "score";
 
-function PageContent({ data }: { data: TAllData }) {
+// `actions` is rendered by the server page and shown at the right end of the controls row.
+// `showOwnerName` is false for the demo user, so the heading doesn't include the owner's name.
+function PageContent({
+  data,
+  actions,
+  showOwnerName = true,
+}: {
+  data: TAllData;
+  actions?: React.ReactNode;
+  showOwnerName?: boolean;
+}) {
   const [selectedPreset, setSelectedPreset] = useState<TSelectedPreset>(INITIAL_SELECTED_PRESET);
   const [startDate, setStartDate] = useState(() => {
     const newestDate = new Date(data.newestDate);
@@ -229,9 +239,9 @@ function PageContent({ data }: { data: TAllData }) {
   return (
     <div>
       {/* <!-- Date Range Controls --> */}
-      <div className="mb-6 inline-block rounded-lg p-4">
+      <div className="mb-6 rounded-lg p-4">
         <h1 className="mb-4 text-xl font-bold text-accent-500">
-          Kevin’s{" "}
+          {showOwnerName ? "Kevin’s " : null}
           <span className="text-accent-600">
             Resmed <span className="font-normal">my</span>Air
           </span>{" "}
@@ -297,6 +307,7 @@ function PageContent({ data }: { data: TAllData }) {
             value={useColumnsOverride ? "columns" : "area"}
             onChange={() => toggleColumn()}
           />
+          {actions ? <div className="ml-auto">{actions}</div> : null}
         </div>
       </div>
 
