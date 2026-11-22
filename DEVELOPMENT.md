@@ -1,8 +1,23 @@
 # Development
 
+## Prerequisites
+
+Local development runs against a local Supabase stack, which runs in Docker. Before running `npm run dev`, `npm run db:seed`, `npm run db:test` or `npm run db:types`:
+
+1. Start Docker Desktop (or another Docker runtime).
+2. Start Supabase:
+
+   ```bash
+   npx supabase start
+   ```
+
+Stop it with `npx supabase stop` when you're done. `npm run db:seed:prod` writes to the hosted project, so it doesn't need Docker.
+
 ## Updating sleep data
 
-When you have new myAir data to add to the dashboard:
+The dashboard reads sleep data from the `sleep_records` table in Supabase. The JSON files in `data/monthlySleepRecords/` hold a copy of every night, and the seed script loads them into the database. Adding new myAir data takes two steps: save it to JSON, then seed it.
+
+### 1. Save the myAir data to JSON
 
 1. Log in to [myAir](https://myair.resmed.com/history)
 2. Open DevTools → Network tab
@@ -15,17 +30,7 @@ When you have new myAir data to add to the dashboard:
    ./scripts/update-data.sh
    ```
 
-   That's it — it reads your clipboard and processes the data.
-
-   If you don't have a clipboard utility (`pbpaste`, `xclip`, or `wl-paste`), save manually:
-
-   ```bash
-   cat > /tmp/myair.json
-   # (paste the JSON here, then press Ctrl+D to finish)
-   node scripts/process-data.mjs /tmp/myair.json
-   ```
-
-   You'll see output like:
+   It reads your clipboard, splits the records by month, strips unused fields, and writes `data/monthlySleepRecords/YYYY-MM.json`, overwriting the files for those months. You'll see output like:
 
    ```bash
    Wrote 2 file(s) (41 total records):
@@ -33,8 +38,37 @@ When you have new myAir data to add to the dashboard:
      2026-06.json  (21 records)
    ```
 
-7. The script extracts the records, splits them by month, strips unused fields, and writes to `data/monthlySleepRecords/YYYY-MM.json` (overwriting existing files for those months)
-8. Verify the build, then create a branch, commit, push, and open a PR.
+   If you don't have a clipboard utility (`pbpaste`, `xclip`, or `wl-paste`), save the response manually:
+
+   ```bash
+   cat > /tmp/myair.json
+   # (paste the JSON here, then press Ctrl+D to finish)
+   node scripts/process-data.mjs /tmp/myair.json
+   ```
+
+### 2. Load the data into Supabase
+
+```bash
+npm run db:seed
+```
+
+This signs in as `SUPABASE_OWNER_EMAIL` and upserts every record from the JSON files. Nights already in the database are updated and new nights are added. Nothing is deleted, so it's safe to run again. The script stops with an error if any row is rejected or not written.
+
+`npm run db:seed` writes to the local project in `.env.local`, which must be running (see [Prerequisites](#prerequisites)). To update the hosted project, run:
+
+```bash
+npm run db:seed:prod
+```
+
+This reads `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_OWNER_EMAIL` and `SUPABASE_OWNER_PASSWORD` from `.env.production.local`. Use the hosted project's values and the owner account in that project.
+
+Reload `/sleep-data` to see the new nights. You don't need to rebuild or redeploy the app.
+
+If demo mode is on, run `npm run db:seed:demo` as well. It moves the demo's 730-night window forward to include the new data.
+
+### 3. Commit the JSON files
+
+Create a branch, commit the changed files in `data/monthlySleepRecords/`, push, and open a PR. The JSON files are what you rebuild the database from, for example after `npx supabase db reset`.
 
 ## Available scripts
 
@@ -50,7 +84,12 @@ When you have new myAir data to add to the dashboard:
 | `npx http-server ./storybook-static`      | Serve the static Storybook build locally for preview        |
 | `npm run chromatic`                       | Publish the current Storybook to Chromatic                  |
 | `npm run chromatic:dry-run`               | Validate the local Chromatic setup without publishing       |
-| `./scripts/update-data.sh`                | Read clipboard, process, and write sleep data (macOS/Linux) |
+| `./scripts/update-data.sh`                | Read clipboard, process, and write sleep JSON (macOS/Linux) |
+| `npm run db:seed`                         | Load the sleep JSON into Supabase as the owner              |
+| `npm run db:seed:demo`                    | Reload the demo user's 730 most recent nights               |
+| `npm run db:seed:prod`                    | Load the sleep JSON into the hosted Supabase project        |
+| `npm run db:test`                         | Run the pgTAP database tests                                |
+| `npm run db:types`                        | Regenerate TypeScript types from the local database         |
 | `node scripts/process-data.mjs --help`    | Data processing script help                                 |
 | `node scripts/process-data.mjs --migrate` | Convert all existing files to current format                |
 
