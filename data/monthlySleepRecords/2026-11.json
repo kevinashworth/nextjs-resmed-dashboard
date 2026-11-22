@@ -166,5 +166,77 @@
     "ahi": 1.1,
     "maskPairCount": 2,
     "leakPercentile": 27.6
+  },
+  {
+    "startDate": "2026-11-15",
+    "totalUsage": 505,
+    "sleepScore": 100,
+    "usageScore": 70,
+    "ahiScore": 5,
+    "maskScore": 5,
+    "leakScore": 20,
+    "ahi": 1.7,
+    "maskPairCount": 2,
+    "leakPercentile": 15.6
+  },
+  {
+    "startDate": "2026-11-16",
+    "totalUsage": 459,
+    "sleepScore": 97,
+    "usageScore": 70,
+    "ahiScore": 5,
+    "maskScore": 5,
+    "leakScore": 17,
+    "ahi": 1.6,
+    "maskPairCount": 2,
+    "leakPercentile": 21.6
+  },
+  {
+    "startDate": "2026-11-17",
+    "totalUsage": 450,
+    "sleepScore": 98,
+    "usageScore": 70,
+    "ahiScore": 5,
+    "maskScore": 5,
+    "leakScore": 18,
+    "ahi": 0.4,
+    "maskPairCount": 1,
+    "leakPercentile": 19.2
+  },
+  {
+    "startDate": "2026-11-18",
+    "totalUsage": 328,
+    "sleepScore": 79,
+    "usageScore": 55,
+    "ahiScore": 5,
+    "maskScore": 5,
+    "leakScore": 14,
+    "ahi": 0.5,
+    "maskPairCount": 1,
+    "leakPercentile": 27.6
+  },
+  {
+    "startDate": "2026-11-19",
+    "totalUsage": 407,
+    "sleepScore": 98,
+    "usageScore": 68,
+    "ahiScore": 5,
+    "maskScore": 5,
+    "leakScore": 20,
+    "ahi": 0.2,
+    "maskPairCount": 1,
+    "leakPercentile": 6
+  },
+  {
+    "startDate": "2026-11-20",
+    "totalUsage": 400,
+    "sleepScore": 82,
+    "usageScore": 67,
+    "ahiScore": 5,
+    "maskScore": 1,
+    "leakScore": 9,
+    "ahi": 2.1,
+    "maskPairCount": 5,
+    "leakPercentile": 38.4
   }
 ]

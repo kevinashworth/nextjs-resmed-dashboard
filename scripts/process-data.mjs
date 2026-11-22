@@ -33,8 +33,16 @@ function isNewFormat(value) {
   return Array.isArray(value);
 }
 
+// Some copied responses wrap numbers like 6.0 as { source: "6.0", parsedValue: 6 }.
+function unwrapNumber(value) {
+  if (value != null && typeof value === "object" && typeof value.parsedValue === "number") {
+    return value.parsedValue;
+  }
+  return value;
+}
+
 function stripRecord(record) {
-  const cleaned = { ...record };
+  const cleaned = Object.fromEntries(Object.entries(record).map(([key, value]) => [key, unwrapNumber(value)]));
   delete cleaned.__typename;
   delete cleaned.sleepRecordPatientId;
   return cleaned;
@@ -133,7 +141,16 @@ async function migrateAll() {
     }
 
     if (isNewFormat(data)) {
-      skipped++;
+      const items = data.map(stripRecord);
+      const content = JSON.stringify(items, null, 2) + "\n";
+      if (content === raw) {
+        skipped++;
+        continue;
+      }
+      await fs.writeFile(fpath, content, "utf8");
+      migrated++;
+      totalRecords += items.length;
+      console.log(`  ✓ ${fname}  (${items.length} records)`);
       continue;
     }
 
